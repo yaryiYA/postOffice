@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -87,6 +88,7 @@ public class ParcelServiceImpl
                 .orElseThrow(() -> new EntityNotFoundException("Parcel not found"));
 
         return parcel.getHistoryPoints().stream()
+                .sorted(Comparator.comparing(HistoryPoint::getAppointmentDate))
                 .map(historyPointMapper::toResponse).toList();
     }
 

@@ -4,7 +4,6 @@ import com.example.postoffice.dto.AbstractRequestDto;
 import com.example.postoffice.dto.AbstractResponseDto;
 import com.example.postoffice.entity.AbstractEntity;
 import com.example.postoffice.service.CommonService;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 
 
@@ -24,8 +23,8 @@ public abstract class BaseController<E extends AbstractEntity,
     }
 
     @Override
-    public ResponseEntity<List<S>> getAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<List<S>> getAll(Integer pageNo, Integer pageSize) {
+        return ResponseEntity.ok(service.findAll(pageNo,pageSize));
     }
 
     @Override

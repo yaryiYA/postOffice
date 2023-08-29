@@ -12,7 +12,8 @@ public interface CommonService<E extends AbstractEntity,
         Q extends AbstractRequestDto,
         S extends AbstractResponseDto> {
 
-    List<S> findAll();
+    List<S> findAll(Integer pageNo, Integer pageSize);
+
     Optional<S> findEntity(UUID id);
     S create(Q entity);
     S update(Q entity,UUID id);

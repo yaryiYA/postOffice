@@ -3,6 +3,7 @@ package com.example.postoffice.controller.rest;
 import com.example.postoffice.dto.AbstractRequestDto;
 import com.example.postoffice.dto.AbstractResponseDto;
 import com.example.postoffice.entity.AbstractEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,8 @@ public interface CommonController<E extends AbstractEntity,
         S extends AbstractResponseDto> {
 
     @GetMapping("/all")
-    public ResponseEntity<List<S>> getAll();
+    public ResponseEntity<List<S>> getAll(@RequestParam(value = "pageNo",defaultValue ="0") Integer pageNo,
+                                          @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize);
 
     @GetMapping("/{UUID}")
     public ResponseEntity<?> getEntity(@PathVariable("UUID") UUID uuid);

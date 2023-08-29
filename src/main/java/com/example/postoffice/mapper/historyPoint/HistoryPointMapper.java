@@ -12,4 +12,5 @@ import org.mapstruct.ReportingPolicy;
         componentModel = "spring")
 public interface HistoryPointMapper extends CommonMapper<HistoryPoint, RequestHistoryPointDto, ResponseHistoryPointDto> {
 
+
 }

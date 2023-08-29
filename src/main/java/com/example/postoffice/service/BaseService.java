@@ -7,6 +7,8 @@ import com.example.postoffice.mapper.CommonMapper;
 import com.example.postoffice.repository.CommonRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,8 +34,9 @@ public abstract class BaseService<E extends AbstractEntity,
     }
 
     @Override
-    public List<S> findAll() {
-        return repository.findAll().stream()
+    public List<S> findAll(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        return repository.findAll(pageable).stream()
                 .map(mapper::toResponse)
                 .toList();
     }

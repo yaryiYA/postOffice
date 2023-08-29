@@ -27,8 +27,6 @@ public class ParcelControllerImpl extends BaseController<Parcel,
         super(service);
     }
 
-
-
     @PostMapping("/registration/{index}")
     ResponseEntity<ResponseParcelDto> registrationParcel(@RequestBody @Valid RequestParcelDto parcel,
                                                          @PathVariable("index") @PositiveOrZero Integer index) {
