@@ -42,7 +42,7 @@ public abstract class BaseService<E extends AbstractEntity,
     }
 
     @Override
-    public Optional<S> findEntity(UUID id) {
+    public Optional<S> findEntity(Long id) {
         return repository.findById(id)
                 .map(mapper::toResponse);
     }
@@ -55,7 +55,7 @@ public abstract class BaseService<E extends AbstractEntity,
     }
 
     @Override
-    public S update(Q entity, UUID id) {
+    public S update(Q entity, Long id) {
         if (repository.findById(id).isEmpty()) {
             throw new EntityNotFoundException("not found " + id);
         }
@@ -66,7 +66,8 @@ public abstract class BaseService<E extends AbstractEntity,
     }
 
     @Override
-    public void delete(UUID id) {
-        repository.deleteById(id);
+    public void delete(Long id) {
+        E entity = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+        repository.delete(entity);
     }
 }

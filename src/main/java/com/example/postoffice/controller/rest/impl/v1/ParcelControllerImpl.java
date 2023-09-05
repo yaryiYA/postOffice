@@ -8,11 +8,14 @@ import com.example.postoffice.entity.Parcel;
 import com.example.postoffice.service.impl.ParcelServiceImpl;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.example.postoffice.entity.enums.PointType.DELIVERED;
 
 @Validated
 @RestController
@@ -27,32 +30,43 @@ public class ParcelControllerImpl extends BaseController<Parcel,
         super(service);
     }
 
-    @PostMapping("/registration/{index}")
+    @PostMapping("/registration")
     ResponseEntity<ResponseParcelDto> registrationParcel(@RequestBody @Valid RequestParcelDto parcel,
-                                                         @PathVariable("index") @PositiveOrZero Integer index) {
+                                                         @RequestParam(value = "index") @PositiveOrZero Integer index) {
 
         return ResponseEntity.ok(service.registrationParcel(parcel, index));
     }
 
-    @GetMapping("/{identifier}/arrive/{index}")
-    ResponseEntity<ResponseParcelDto> arriveAtDepartment(@PathVariable("identifier") @PositiveOrZero  Long identifierParcel,
-                                                         @PathVariable("index") Integer indexDepartment) {
+    @GetMapping("/arrive")
+    ResponseEntity<?> arriveAtDepartment(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel,
+                                         @RequestParam(value = "index") Integer indexDepartment) {
+        if (sendBlockingParcel(identifierParcel)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("letter has been delivered");
+        }
         return ResponseEntity.ok(service.arriveAtDepartment(identifierParcel, indexDepartment));
     }
 
-    @GetMapping("/{identifier}/leave")
-    ResponseEntity<ResponseParcelDto> arriveAtDepartment(@PathVariable("identifier") @PositiveOrZero Long identifier) {
-        return ResponseEntity.ok(service.leaveDepartment(identifier));
+    @GetMapping("/leave")
+    ResponseEntity<?> arriveAtDepartment(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel) {
+        if (sendBlockingParcel(identifierParcel)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("letter has been delivered");
+        }
+        return ResponseEntity.ok(service.leaveDepartment(identifierParcel));
     }
 
-    @GetMapping("/{identifier}/delivery")
-    ResponseEntity<ResponseParcelDto> deliveryToRecipient(@PathVariable("identifier") @PositiveOrZero Long identifier) {
-        return ResponseEntity.ok(service.deliveryToRecipient(identifier));
+    @GetMapping("/delivery")
+    ResponseEntity<ResponseParcelDto> deliveryToRecipient(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel) {
+        return ResponseEntity.ok(service.deliveryToRecipient(identifierParcel));
     }
 
-    @GetMapping("/{identifier}/history")
-    ResponseEntity<List<ResponseHistoryPointDto>> getHistoryParcel(@PathVariable("identifier") @PositiveOrZero Long identifier) {
-        return ResponseEntity.ok(service.getHistoryParcel(identifier));
+    @GetMapping("/history")
+    ResponseEntity<List<ResponseHistoryPointDto>> getHistoryParcel(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel) {
+        return ResponseEntity.ok(service.getHistoryParcel(identifierParcel));
+    }
+
+    private Boolean sendBlockingParcel(Long identifier) {
+        return super.service.findEntity(identifier).orElseThrow().getHistoryPoints().stream()
+                .anyMatch(historyPoint -> historyPoint.getPointType() == DELIVERED);
     }
 
 

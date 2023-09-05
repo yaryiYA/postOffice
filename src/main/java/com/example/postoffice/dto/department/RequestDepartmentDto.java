@@ -13,7 +13,11 @@ import java.io.Serializable;
  * DTO for {@link com.example.postoffice.entity.Department}
  */
 @EqualsAndHashCode(callSuper = true)
-@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class RequestDepartmentDto extends AbstractRequestDto implements Serializable {
     @NotBlank
     private String name;

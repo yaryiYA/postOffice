@@ -2,10 +2,8 @@ package com.example.postoffice.entity;
 
 import com.example.postoffice.entity.enums.ParcelType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,19 +11,15 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table(name = "parcel")
 public class Parcel extends AbstractEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-        private Long identifier;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "parcel_type")
     private ParcelType parcelType;
-
-
 
     @Column(name = "recipient_index", nullable = false)
     private Integer recipientIndex;

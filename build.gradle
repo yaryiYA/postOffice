@@ -2,17 +2,18 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
+    id 'jacoco'
 
 }
 
 group = 'com.example'
-version =  '0.1.0'
-
+version = '0.1.0'
 
 
 java {
     sourceCompatibility = '17'
 }
+
 
 configurations {
     compileOnly {
@@ -23,9 +24,6 @@ configurations {
 repositories {
     mavenCentral()
 }
-
-
-
 
 
 dependencies {
@@ -45,16 +43,37 @@ dependencies {
     annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
 
 
-
     runtimeOnly 'org.postgresql:postgresql'
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-
 }
 
-
-tasks.named('test') {
+test {
     useJUnitPlatform()
+
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "com/example/postoffice/dto/*",
+                    "com/example/postoffice/mapper/*",
+                    "com/example/postoffice/entity/*",
+                    "com/example/postoffice/repository/*",
+                    "com/example/postoffice/exception/*",
+                    "com/example/postoffice/PostOfficeApplication.class",
+                    "com/example/postoffice/controller/rest/BaseController.class"
+            ])
+        }))
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.8"
 }

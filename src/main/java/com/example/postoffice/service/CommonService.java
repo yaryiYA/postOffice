@@ -14,9 +14,9 @@ public interface CommonService<E extends AbstractEntity,
 
     List<S> findAll(Integer pageNo, Integer pageSize);
 
-    Optional<S> findEntity(UUID id);
+    Optional<S> findEntity(Long id);
     S create(Q entity);
-    S update(Q entity,UUID id);
-    void delete(UUID id);
+    S update(Q entity,Long id);
+    void delete(Long id);
 
 }

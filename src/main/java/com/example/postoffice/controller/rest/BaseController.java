@@ -28,8 +28,8 @@ public abstract class BaseController<E extends AbstractEntity,
     }
 
     @Override
-    public ResponseEntity<?> getEntity(UUID uuid) {
-        return ResponseEntity.ok(service.findEntity(uuid));
+    public ResponseEntity<?> getEntity(Long id) {
+        return ResponseEntity.ok(service.findEntity(id));
     }
 
     @Override
@@ -38,13 +38,13 @@ public abstract class BaseController<E extends AbstractEntity,
     }
 
     @Override
-    public ResponseEntity<?> updateEntity( Q entity, UUID uuid) {
-        return ResponseEntity.ok(service.update(entity,uuid));
+    public ResponseEntity<?> updateEntity( Q entity, Long id) {
+        return ResponseEntity.ok(service.update(entity,id));
     }
 
     @Override
-    public ResponseEntity<String> deleteEntity(UUID uuid) {
-        service.delete(uuid);
+    public ResponseEntity<String> deleteEntity(Long id) {
+        service.delete(id);
         return ResponseEntity.ok("Entity was deleted");
     }
 }

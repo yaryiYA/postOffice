@@ -15,7 +15,11 @@ import java.util.List;
  * DTO for {@link com.example.postoffice.entity.Department}
  */
 @EqualsAndHashCode(callSuper = true)
-@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class ResponseDepartmentDto extends AbstractResponseDto implements Serializable {
     @NotBlank
     private String name;

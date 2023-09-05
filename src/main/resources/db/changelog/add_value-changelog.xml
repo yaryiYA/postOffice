@@ -5,18 +5,21 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-    <changeSet id="1692789193223-2" author="yinfi">
+    <changeSet id="1693488457222-1" author="yinfi">
         <insert tableName="department">
-            <column name="id" value="588d4c7f-991a-4f96-b546-2aed21a697de"/>
-            <column name="name" value="№123456"/>
+            <column name="name" value="1"/>
             <column name="department_address" value="test"/>
-            <column name="index" valueNumeric="136189"/>
+            <column name="index" valueNumeric="111111"/>
         </insert>
         <insert tableName="department">
-            <column name="id" value="73ee71ba-770f-4caa-8061-55b55180ada7"/>
-            <column name="name" value="№654321"/>
+            <column name="name" value="2"/>
             <column name="department_address" value="test"/>
-            <column name="index" valueNumeric="12345678"/>
+            <column name="index" valueNumeric="222222"/>
+        </insert>
+        <insert tableName="department">
+            <column name="name" value="test"/>
+            <column name="department_address" value="test"/>
+            <column name="index" valueNumeric="333333"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

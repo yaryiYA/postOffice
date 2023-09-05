@@ -5,9 +5,18 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
-    <changeSet id="1692964022425-1" author="yinfi (generated)">
+    <changeSet id="1693557621885-1" author="yinfi (generated)">
+        <createSequence incrementBy="50" sequenceName="department_seq" startValue="1"/>
+    </changeSet>
+    <changeSet id="1693557621885-2" author="yinfi (generated)">
+        <createSequence incrementBy="50" sequenceName="parcel_seq" startValue="1"/>
+    </changeSet>
+    <changeSet id="1693557621885-3" author="yinfi (generated)">
+        <createSequence incrementBy="50" sequenceName="transaction_history_point_seq" startValue="1"/>
+    </changeSet>
+    <changeSet id="1693557621885-4" author="yinfi (generated)">
         <createTable tableName="department">
-            <column name="id" type="UUID">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_department"/>
             </column>
             <column name="name" type="VARCHAR(255)">
@@ -21,9 +30,9 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="1692964022425-2" author="yinfi (generated)">
+    <changeSet id="1693557621885-5" author="yinfi (generated)">
         <createTable tableName="parcel">
-            <column autoIncrement="true" name="id" type="BIGINT" incrementBy="1">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_parcel"/>
             </column>
             <column name="parcel_type" type="VARCHAR(255)"/>
@@ -41,19 +50,19 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="1692964022425-3" author="yinfi (generated)">
+    <changeSet id="1693557621885-6" author="yinfi (generated)">
         <createTable tableName="parcel_history_points">
             <column name="parcel_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="history_points_id" type="UUID">
+            <column name="history_points_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="1692964022425-4" author="yinfi (generated)">
+    <changeSet id="1693557621885-7" author="yinfi (generated)">
         <createTable tableName="transaction_history_point">
-            <column name="id" type="UUID">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_transaction_history_point"/>
             </column>
             <column name="point_type" type="VARCHAR(255)">
@@ -63,19 +72,19 @@
             <column name="index_department" type="INT"/>
         </createTable>
     </changeSet>
-    <changeSet id="1692964022425-5" author="yinfi (generated)">
+    <changeSet id="1693557621885-8" author="yinfi (generated)">
         <addUniqueConstraint columnNames="index" constraintName="uc_department_index" tableName="department"/>
     </changeSet>
-    <changeSet id="1692964022425-6" author="yinfi (generated)">
+    <changeSet id="1693557621885-9" author="yinfi (generated)">
         <addUniqueConstraint columnNames="history_points_id" constraintName="uc_parcel_history_points_historypoints"
                              tableName="parcel_history_points"/>
     </changeSet>
-    <changeSet id="1692964022425-7" author="yinfi (generated)">
+    <changeSet id="1693557621885-10" author="yinfi (generated)">
         <addForeignKeyConstraint baseColumnNames="history_points_id" baseTableName="parcel_history_points"
                                  constraintName="fk_parhispoi_on_history_point" referencedColumnNames="id"
                                  referencedTableName="transaction_history_point"/>
     </changeSet>
-    <changeSet id="1692964022425-8" author="yinfi (generated)">
+    <changeSet id="1693557621885-11" author="yinfi (generated)">
         <addForeignKeyConstraint baseColumnNames="parcel_id" baseTableName="parcel_history_points"
                                  constraintName="fk_parhispoi_on_parcel" referencedColumnNames="id"
                                  referencedTableName="parcel"/>

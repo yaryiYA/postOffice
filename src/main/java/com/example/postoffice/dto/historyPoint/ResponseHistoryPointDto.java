@@ -12,7 +12,11 @@ import java.time.LocalDateTime;
  * DTO for {@link com.example.postoffice.entity.HistoryPoint}
  */
 @EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ResponseHistoryPointDto extends AbstractResponseDto implements Serializable {
     @NotNull
     private PointType pointType;

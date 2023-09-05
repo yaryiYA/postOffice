@@ -13,9 +13,13 @@ import java.util.List;
  * DTO for {@link com.example.postoffice.entity.Parcel}
  */
 @EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class RequestParcelDto extends AbstractRequestDto implements Serializable {
-    @PositiveOrZero
+
     private Long identifier;
     @NotNull
     private ParcelType parcelType;

@@ -8,7 +8,6 @@ import com.example.postoffice.entity.Parcel;
 import com.example.postoffice.entity.enums.PointType;
 import com.example.postoffice.mapper.historyPoint.HistoryPointMapper;
 import com.example.postoffice.mapper.parcel.ParcelMapper;
-import com.example.postoffice.repository.impl.DepartmentRepository;
 import com.example.postoffice.repository.impl.ParcelRepository;
 import com.example.postoffice.service.BaseService;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,9 +18,7 @@ import org.springframework.validation.annotation.Validated;
 
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-
 
 
 @Service
@@ -39,7 +36,6 @@ public class ParcelServiceImpl
     @Autowired
     public ParcelServiceImpl(ParcelRepository repository,
                              ParcelMapper mapper,
-                             DepartmentRepository departmentRepository,
                              DepartmentServiceImpl departmentService,
                              HistoryPointMapper historyPointMapper) {
         super(repository, mapper);
@@ -58,7 +54,7 @@ public class ParcelServiceImpl
 
     public ResponseParcelDto arriveAtDepartment(Long identifierParcel, Integer departmentIndex) {
         departmentService.findByIndex(departmentIndex);
-        Parcel parcelRep = super.repository.findByIdentifier(identifierParcel)
+        Parcel parcelRep = super.repository.findById(identifierParcel)
                 .orElseThrow(() -> new EntityNotFoundException("Parcel not found"));
         Parcel parcel = addEventParcel(parcelRep, departmentIndex, PointType.ARRIVED);
 
@@ -66,7 +62,7 @@ public class ParcelServiceImpl
     }
 
     public ResponseParcelDto leaveDepartment(Long identifierParcel) {
-        Parcel parcelRep = super.repository.findByIdentifier(identifierParcel)
+        Parcel parcelRep = super.repository.findById(identifierParcel)
                 .orElseThrow(() -> new EntityNotFoundException("Parcel not found"));
         Integer index = checkEndIndex(parcelRep);
         Parcel parcel = addEventParcel(parcelRep, index, PointType.DEPARTURE);
@@ -75,7 +71,7 @@ public class ParcelServiceImpl
     }
 
     public ResponseParcelDto deliveryToRecipient(Long identifierParcel) {
-        Parcel parcelRep = super.repository.findByIdentifier(identifierParcel)
+        Parcel parcelRep = super.repository.findById(identifierParcel)
                 .orElseThrow(() -> new EntityNotFoundException("Parcel not found"));
         Integer index = checkEndIndex(parcelRep);
         Parcel parcel = addEventParcel(parcelRep, index, PointType.DELIVERED);
@@ -84,14 +80,12 @@ public class ParcelServiceImpl
     }
 
     public List<ResponseHistoryPointDto> getHistoryParcel(Long identifierParcel) {
-        Parcel parcel = super.repository.findByIdentifier(identifierParcel)
+        Parcel parcel = super.repository.findById(identifierParcel)
                 .orElseThrow(() -> new EntityNotFoundException("Parcel not found"));
 
         return parcel.getHistoryPoints().stream()
-                .sorted(Comparator.comparing(HistoryPoint::getAppointmentDate))
                 .map(historyPointMapper::toResponse).toList();
     }
-
 
     private Parcel addEventParcel(Parcel parcel, Integer departmentIndex, PointType pointType) {
         HistoryPoint historyPoint = new HistoryPoint(pointType, LocalDateTime.now(), departmentIndex);
