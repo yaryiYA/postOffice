@@ -1,7 +1,10 @@
 package com.example.postoffice.entity;
 
-import jakarta.persistence.*;
+
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+import javax.persistence.*;
 
 
 @MappedSuperclass
@@ -9,10 +12,11 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public abstract class AbstractEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long identifier;
+    private Long id;
 
 }

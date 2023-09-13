@@ -5,7 +5,6 @@ import com.example.postoffice.dto.historyPoint.ResponseHistoryPointDto;
 import com.example.postoffice.entity.HistoryPoint;
 import com.example.postoffice.mapper.CommonMapper;
 import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
 
 
 @Mapper(

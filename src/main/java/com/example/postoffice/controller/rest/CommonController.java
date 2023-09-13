@@ -3,31 +3,31 @@ package com.example.postoffice.controller.rest;
 import com.example.postoffice.dto.AbstractRequestDto;
 import com.example.postoffice.dto.AbstractResponseDto;
 import com.example.postoffice.entity.AbstractEntity;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
+import com.example.postoffice.entity.enums.EntitySort;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.UUID;
 
 public interface CommonController<E extends AbstractEntity,
         Q extends AbstractRequestDto,
-        S extends AbstractResponseDto> {
+        S extends AbstractResponseDto
+        > {
 
     @GetMapping("/all")
-    public ResponseEntity<List<S>> getAll(@RequestParam(value = "pageNo",defaultValue ="0") Integer pageNo,
-                                          @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize);
+    ResponseEntity<Page<S>> getAll(@RequestParam(value = "offset", defaultValue = "0") Integer offset,
+                                   @RequestParam(value = "limit", defaultValue = "10") Integer limit,
+                                   @RequestParam(value = "sort", defaultValue = "ID_ASC") EntitySort sort);
 
-    @GetMapping("/{ID}")
-    public ResponseEntity<?> getEntity(@PathVariable("ID") Long id);
+    @GetMapping("/get")
+    ResponseEntity<?> getEntity(@RequestParam("id") Long id);
 
     @PostMapping("/create")
-    public ResponseEntity<?> createEntity(@RequestBody Q entity);
+    ResponseEntity<?> createEntity(@RequestBody Q requestEntity);
 
-    @PutMapping("/update/{ID}")
-    public ResponseEntity<?> updateEntity(@RequestBody Q entity, @PathVariable("ID") Long id);
+    @PutMapping("/update")
+    ResponseEntity<?> updateEntity(@RequestBody Q requestEntity, @RequestParam("id") Long id);
 
-    @DeleteMapping("/delete/{ID}")
-    public ResponseEntity<String> deleteEntity(@PathVariable("ID") Long id);
+    @DeleteMapping("/delete")
+    ResponseEntity<String> deleteEntity(@RequestParam("id") Long id);
 }

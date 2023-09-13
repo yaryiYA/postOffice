@@ -1,22 +1,20 @@
 package com.example.postoffice.service;
 
-import com.example.postoffice.dto.AbstractRequestDto;
-import com.example.postoffice.dto.AbstractResponseDto;
 import com.example.postoffice.entity.AbstractEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
-public interface CommonService<E extends AbstractEntity,
-        Q extends AbstractRequestDto,
-        S extends AbstractResponseDto> {
+public interface CommonService<E extends AbstractEntity> {
 
-    List<S> findAll(Integer pageNo, Integer pageSize);
+    Page<E> findAll(Pageable pageable);
 
-    Optional<S> findEntity(Long id);
-    S create(Q entity);
-    S update(Q entity,Long id);
+    E findEntity(Long id);
+
+    E create(E entity);
+
+    E update(E entity, Long id);
+
     void delete(Long id);
 
 }

@@ -1,22 +1,21 @@
 package com.example.postoffice.entity;
 
 import com.example.postoffice.entity.enums.PointType;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
-import lombok.*;
 
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+import javax.persistence.*;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
-import java.util.UUID;
+
 
 @Getter
 @Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "transaction_history_point")
 
 public class HistoryPoint extends AbstractEntity {

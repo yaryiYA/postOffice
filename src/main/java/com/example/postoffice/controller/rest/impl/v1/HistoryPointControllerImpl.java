@@ -4,6 +4,7 @@ import com.example.postoffice.controller.rest.BaseController;
 import com.example.postoffice.dto.historyPoint.RequestHistoryPointDto;
 import com.example.postoffice.dto.historyPoint.ResponseHistoryPointDto;
 import com.example.postoffice.entity.HistoryPoint;
+import com.example.postoffice.mapper.historyPoint.HistoryPointMapperImpl;
 import com.example.postoffice.service.impl.HistoryPointServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class HistoryPointControllerImpl extends BaseController<HistoryPoint,
         RequestHistoryPointDto,
         ResponseHistoryPointDto,
-        HistoryPointServiceImpl> {
-
+        HistoryPointServiceImpl,
+        HistoryPointMapperImpl> {
     @Autowired
-    protected HistoryPointControllerImpl(HistoryPointServiceImpl service) {
-        super(service);
+    protected HistoryPointControllerImpl(HistoryPointServiceImpl service, HistoryPointMapperImpl mapper) {
+        super(service, mapper);
     }
 }

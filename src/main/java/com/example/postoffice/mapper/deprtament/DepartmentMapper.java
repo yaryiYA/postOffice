@@ -6,7 +6,6 @@ import com.example.postoffice.entity.Department;
 import com.example.postoffice.mapper.CommonMapper;
 import com.example.postoffice.mapper.historyPoint.HistoryPointMapper;
 import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         componentModel = "spring", uses = {HistoryPointMapper.class})

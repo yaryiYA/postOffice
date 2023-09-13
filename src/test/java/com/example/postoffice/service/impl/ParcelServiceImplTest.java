@@ -1,16 +1,9 @@
 package com.example.postoffice.service.impl;
 
-import com.example.postoffice.dto.department.ResponseDepartmentDto;
-import com.example.postoffice.dto.historyPoint.ResponseHistoryPointDto;
-import com.example.postoffice.dto.parsel.RequestParcelDto;
-import com.example.postoffice.dto.parsel.ResponseParcelDto;
-
+import com.example.postoffice.entity.Department;
 import com.example.postoffice.entity.HistoryPoint;
 import com.example.postoffice.entity.Parcel;
 import com.example.postoffice.entity.enums.ParcelType;
-
-import com.example.postoffice.mapper.historyPoint.HistoryPointMapper;
-import com.example.postoffice.mapper.parcel.ParcelMapper;
 import com.example.postoffice.repository.impl.ParcelRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,57 +14,32 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-
 
 @ExtendWith(MockitoExtension.class)
 class ParcelServiceImplTest {
     @Mock
     private ParcelRepository parcelRepository;
     @Mock
-    private ParcelMapper parcelMapper;
-
-    @Mock
-    HistoryPointMapper historyPointMapper;
-    @Mock
     private DepartmentServiceImpl departmentService;
     @InjectMocks
     private ParcelServiceImpl parcelService;
 
-    private Parcel parcelBuild;
-    private RequestParcelDto requestParcelDtoBuild;
-    private ResponseParcelDto responseParcelDtoBuild;
+    private Parcel parcel;
 
 
     @BeforeEach
     public void setup() {
-        parcelBuild = Parcel.builder()
-                .parcelType(ParcelType.LETTER)
-                .recipientIndex(123456)
-                .recipientAddress("test")
-                .firstName("ivan")
-                .lastName("ivanov")
-                .historyPoints(new ArrayList<>())
-                .build();
-
-        requestParcelDtoBuild = RequestParcelDto.builder()
-                .parcelType(ParcelType.LETTER)
-                .recipientIndex(123456)
-                .recipientAddress("test")
-                .firstName("ivan")
-                .lastName("ivanov")
-                .build();
-
-        responseParcelDtoBuild = ResponseParcelDto.builder()
+        parcel = Parcel.builder()
                 .parcelType(ParcelType.LETTER)
                 .recipientIndex(123456)
                 .recipientAddress("test")
@@ -83,70 +51,64 @@ class ParcelServiceImplTest {
 
     @Test
     public void ParcelServiceImplCreate() {
-        when(parcelMapper.toEntity(any())).thenReturn(parcelBuild);
-        when(parcelRepository.save(any())).thenReturn(parcelBuild);
-        when(parcelMapper.toResponse(any())).thenReturn(responseParcelDtoBuild);
+        when(parcelRepository.save(parcel)).thenReturn(parcel);
 
-        ResponseParcelDto responseParcelDto = parcelService.create(requestParcelDtoBuild);
+        Parcel parcelResponse = parcelService.create(parcel);
 
-        Assertions.assertThat(responseParcelDto).isNotNull();
+        Assertions.assertThat(parcelResponse).isNotNull();
 
-        verify(parcelMapper).toEntity(requestParcelDtoBuild);
-        verify(parcelRepository).save(any());
-        verify(parcelMapper).toResponse(parcelBuild);
+        verify(parcelRepository).save(parcel);
     }
 
     @Test
     public void ParcelServiceImplFindAll() {
-        Page<Parcel> parcels = Mockito.mock();
+        Pageable pageable = Mockito.mock(Pageable.class);
+        List<Parcel> parcelList = List.of(parcel, parcel);
+        Page<Parcel> parcels = new PageImpl<>(parcelList);
 
-        when(parcelRepository.findAll(any(Pageable.class))).thenReturn(parcels);
+        when(parcelRepository.findAll(pageable)).thenReturn(parcels);
 
-        List<ResponseParcelDto> all = parcelService.findAll(1, 10);
+        Page<Parcel> all = parcelService.findAll(pageable);
 
         Assertions.assertThat(all).isNotNull();
-
     }
 
     @Test
     public void ParcelServiceFindById() {
         Long identifierParcel = 1L;
-        when(parcelRepository.findById(identifierParcel)).thenReturn(Optional.of((parcelBuild)));
-        when(parcelMapper.toResponse(any())).thenReturn(responseParcelDtoBuild);
+        when(parcelRepository.findById(identifierParcel)).thenReturn(Optional.of((parcel)));
 
-        ResponseParcelDto responseParcelDto = parcelService.findEntity(identifierParcel).get();
+        Parcel parcelResponse = parcelService.findEntity(identifierParcel);
 
-        Assertions.assertThat(responseParcelDto).isNotNull();
+        Assertions.assertThat(parcelResponse).isNotNull();
 
-        verify(parcelRepository, times(1)).findById(identifierParcel);
-        verify(parcelMapper).toResponse(any());
+        verify(parcelRepository).findById(identifierParcel);
     }
 
     @Test
     public void ParcelServiceUpdate() {
+        Long identifierParcel = 1L;
 
-        when(parcelRepository.findById(parcelBuild.getIdentifier())).thenReturn(Optional.of(parcelBuild));
-        when(parcelMapper.toEntity(any())).thenReturn(parcelBuild);
-        when(parcelMapper.toResponse(any())).thenReturn(responseParcelDtoBuild);
+        when(parcelRepository.findById(identifierParcel)).thenReturn(Optional.of(parcel));
+        when(parcelRepository.save(parcel)).thenReturn(parcel);
 
-        ResponseParcelDto update = parcelService.update(requestParcelDtoBuild, parcelBuild.getIdentifier());
+        Parcel parcelUpdate = parcelService.update(parcel, identifierParcel);
 
-        Assertions.assertThat(update).isNotNull();
+        Assertions.assertThat(parcelUpdate).isNotNull();
 
-        verify(parcelRepository).findById(parcelBuild.getIdentifier());
-        verify(parcelMapper).toEntity(any());
-        verify(parcelMapper).toResponse(any());
-
+        verify(parcelRepository).findById(identifierParcel);
     }
 
     @Test
     public void ParcelServiceDelete() {
-        when(parcelRepository.findById(parcelBuild.getIdentifier())).thenReturn(Optional.ofNullable(parcelBuild));
-        doNothing().when(parcelRepository).delete(parcelBuild);
+        Long identifierParcel = 1L;
 
-        assertAll(() -> parcelService.delete(parcelBuild.getIdentifier()));
+        when(parcelRepository.findById(identifierParcel)).thenReturn(Optional.of(parcel));
 
-        verify(parcelRepository,times(1)).findById(parcelBuild.getIdentifier());
+        parcelService.delete(identifierParcel);
+
+        verify(parcelRepository).findById(identifierParcel);
+        verify(parcelRepository).delete(parcel);
     }
 
 
@@ -154,18 +116,14 @@ class ParcelServiceImplTest {
     void registrationParcel() {
         Integer startIndexDepartment = 123456;
 
-        when(departmentService.findByIndex(startIndexDepartment)).thenReturn(new ResponseDepartmentDto());
-        when(parcelMapper.toEntity(requestParcelDtoBuild)).thenReturn(parcelBuild);
-        when(parcelRepository.save(any())).thenReturn(parcelBuild);
-        when(parcelMapper.toResponse(any())).thenReturn(responseParcelDtoBuild);
+        when(parcelRepository.save(parcel)).thenReturn(parcel);
 
-        ResponseParcelDto responseParcelDto = parcelService.registrationParcel(requestParcelDtoBuild, startIndexDepartment);
+        Parcel parcelResponse = parcelService.registrationParcel(parcel, startIndexDepartment);
+
+        Assertions.assertThat(parcelResponse).isNotNull();
 
         verify(departmentService).findByIndex(startIndexDepartment);
-        verify(parcelMapper).toEntity(requestParcelDtoBuild);
-        verify(parcelRepository).save(parcelBuild);
-        verify(parcelMapper).toResponse(parcelBuild);
-        Assertions.assertThat(responseParcelDto).isNotNull();
+        verify(parcelRepository).save(parcel);
     }
 
     @Test
@@ -173,76 +131,76 @@ class ParcelServiceImplTest {
         Long identifierParcel = 1L;
         Integer departmentIndex = 123456;
 
-        when(departmentService.findByIndex(departmentIndex)).thenReturn(new ResponseDepartmentDto());
-        when(parcelRepository.findById(identifierParcel)).thenReturn(Optional.ofNullable(parcelBuild));
-        when(parcelRepository.save(any())).thenReturn(parcelBuild);
-        when(parcelMapper.toResponse(any())).thenReturn(responseParcelDtoBuild);
+        when(departmentService.findByIndex(departmentIndex)).thenReturn(new Department());
+        when(parcelRepository.findById(identifierParcel)).thenReturn(Optional.ofNullable(parcel));
+        when(parcelRepository.save(parcel)).thenReturn(parcel);
 
-        ResponseParcelDto responseParcelDto = parcelService.arriveAtDepartment(identifierParcel, departmentIndex);
+        Parcel parcelResponse = parcelService.arriveAtDepartment(identifierParcel, departmentIndex);
 
+        Assertions.assertThat(parcelResponse).isNotNull();
         verify(departmentService).findByIndex(departmentIndex);
-        verify(parcelRepository, times(1)).findById(identifierParcel);
-        verify(parcelRepository).save(parcelBuild);
-        verify(parcelMapper).toResponse(parcelBuild);
-        Assertions.assertThat(responseParcelDto).isNotNull();
+        verify(parcelRepository).findById(identifierParcel);
+        verify(parcelRepository).save(parcel);
+
     }
 
     @Test
     void leaveDepartment() {
         Long identifierParcel = 1L;
-        Integer departmentIndex = 123456;
 
-        when(departmentService.findByIndex(departmentIndex)).thenReturn(new ResponseDepartmentDto());
-        when(parcelRepository.findById(identifierParcel)).thenReturn(Optional.ofNullable(parcelBuild));
-        when(parcelRepository.save(any())).thenReturn(parcelBuild);
-        when(parcelMapper.toResponse(any())).thenReturn(responseParcelDtoBuild);
+        parcel.getHistoryPoints().add(new HistoryPoint());
+        parcel.getHistoryPoints().add(new HistoryPoint());
 
-        ResponseParcelDto responseParcelDto = parcelService.arriveAtDepartment(identifierParcel, departmentIndex);
+        when(parcelRepository.findById(identifierParcel)).thenReturn(Optional.ofNullable(parcel));
+        when(parcelRepository.save(parcel)).thenReturn(parcel);
 
-        verify(departmentService).findByIndex(departmentIndex);
-        verify(parcelRepository, times(1)).findById(identifierParcel);
-        verify(parcelRepository).save(parcelBuild);
-        verify(parcelMapper).toResponse(parcelBuild);
-        Assertions.assertThat(responseParcelDto).isNotNull();
+        Parcel parcelResponse = parcelService.leaveDepartment(identifierParcel);
+
+        Assertions.assertThat(parcelResponse).isNotNull();
+
+        verify(parcelRepository).findById(identifierParcel);
+        verify(parcelRepository).save(parcel);
     }
 
     @Test
     void deliveryToRecipient() {
-
         Long identifierParcel = 1L;
-        Integer departmentIndex = 123456;
 
-        when(departmentService.findByIndex(departmentIndex)).thenReturn(new ResponseDepartmentDto());
-        when(parcelRepository.findById(identifierParcel)).thenReturn(Optional.ofNullable(parcelBuild));
-        when(parcelRepository.save(any())).thenReturn(parcelBuild);
-        when(parcelMapper.toResponse(any())).thenReturn(responseParcelDtoBuild);
+        parcel.getHistoryPoints().add(new HistoryPoint());
+        parcel.getHistoryPoints().add(new HistoryPoint());
 
-        ResponseParcelDto responseParcelDto = parcelService.arriveAtDepartment(identifierParcel, departmentIndex);
+        when(parcelRepository.findById(identifierParcel)).thenReturn(Optional.ofNullable(parcel));
+        when(parcelRepository.save(parcel)).thenReturn(parcel);
 
-        verify(departmentService).findByIndex(departmentIndex);
+        Parcel parcelResponse = parcelService.deliveryToRecipient(identifierParcel);
+
+        Assertions.assertThat(parcelResponse).isNotNull();
+
         verify(parcelRepository, times(1)).findById(identifierParcel);
-        verify(parcelRepository).save(parcelBuild);
-        verify(parcelMapper).toResponse(parcelBuild);
-        Assertions.assertThat(responseParcelDto).isNotNull();
+        verify(parcelRepository).save(parcel);
     }
 
     @Test
     void getHistoryParcel() {
         Long identifierParcel = 1L;
+        parcel.getHistoryPoints().add(new HistoryPoint());
+        parcel.getHistoryPoints().add(new HistoryPoint());
 
-        parcelBuild.getHistoryPoints().add(new HistoryPoint());
-        parcelBuild.getHistoryPoints().add(new HistoryPoint());
+        when(parcelRepository.findById(identifierParcel)).thenReturn(Optional.ofNullable(parcel));
 
-        when(parcelRepository.findById(identifierParcel)).thenReturn(Optional.ofNullable(parcelBuild));
-        when(historyPointMapper.toResponse(any())).thenReturn(new ResponseHistoryPointDto());
-        when(historyPointMapper.toResponse(any())).thenReturn(new ResponseHistoryPointDto());
-
-        List<ResponseHistoryPointDto> historyParcel = parcelService.getHistoryParcel(identifierParcel);
+        List<HistoryPoint> historyParcel = parcelService.getHistoryParcel(identifierParcel);
 
         Assertions.assertThat(historyParcel).isNotNull();
         Assertions.assertThat(historyParcel.size()).isEqualTo(2);
 
-        verify(parcelRepository, times(1)).findById(identifierParcel);
-        verify(historyPointMapper, times(2)).toResponse(any());
+        verify(parcelRepository).findById(identifierParcel);
+    }
+
+    @Test
+    public void entityNotFoundTest() {
+        Long id = 1L;
+        Mockito.when(parcelRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> parcelService.update(parcel, id));
     }
 }

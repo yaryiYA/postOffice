@@ -1,19 +1,22 @@
 package com.example.postoffice.entity;
 
 
-import jakarta.persistence.*;
-import lombok.*;
 
-import java.util.UUID;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+import javax.persistence.*;
+
 
 @Getter
 @Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "department")
 public class Department extends AbstractEntity  {
+
 
     @Column(name = "name", nullable = false)
     private String name;

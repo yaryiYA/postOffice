@@ -1,30 +1,27 @@
 package com.example.postoffice.service.impl;
 
-import com.example.postoffice.dto.historyPoint.RequestHistoryPointDto;
-import com.example.postoffice.dto.historyPoint.ResponseHistoryPointDto;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.postoffice.entity.HistoryPoint;
-import com.example.postoffice.mapper.historyPoint.HistoryPointMapper;
 import com.example.postoffice.repository.impl.HistoryPointRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
-
 
 @ExtendWith(MockitoExtension.class)
 class HistoryPointServiceImplTest {
@@ -33,26 +30,13 @@ class HistoryPointServiceImplTest {
     private HistoryPointRepository historyPointRepository;
     @InjectMocks
     private HistoryPointServiceImpl historyPointService;
-    @Mock
-    private HistoryPointMapper historyPointMapper;
 
-    private HistoryPoint historyPointBuild;
-    private RequestHistoryPointDto requestHistoryPointDtoBuild;
-    private ResponseHistoryPointDto responseHistoryPointDtoBuild;
+    private HistoryPoint historyPoint;
+
 
     @BeforeEach
     public void setup() {
-        historyPointBuild = HistoryPoint.builder()
-                .indexDepartment(123456)
-                .appointmentDate(LocalDateTime.now())
-                .build();
-
-        requestHistoryPointDtoBuild = RequestHistoryPointDto.builder()
-                .indexDepartment(123456)
-                .appointmentDate(LocalDateTime.now())
-                .build();
-
-        responseHistoryPointDtoBuild = ResponseHistoryPointDto.builder()
+        historyPoint = HistoryPoint.builder()
                 .indexDepartment(123456)
                 .appointmentDate(LocalDateTime.now())
                 .build();
@@ -60,68 +44,72 @@ class HistoryPointServiceImplTest {
 
     @Test
     public void historyPointServiceImplCreate() {
-        when(historyPointMapper.toEntity(any())).thenReturn(historyPointBuild);
-        when(historyPointRepository.save(any())).thenReturn(historyPointBuild);
-        when(historyPointMapper.toResponse(any())).thenReturn(responseHistoryPointDtoBuild);
+        when(historyPointRepository.save(historyPoint)).thenReturn(historyPoint);
 
-        ResponseHistoryPointDto responseHistoryPointDto = historyPointService.create(requestHistoryPointDtoBuild);
+        HistoryPoint historyPointResponse = historyPointService.create(historyPoint);
 
-        Assertions.assertThat(responseHistoryPointDto).isNotNull();
+        Assertions.assertThat(historyPointResponse).isNotNull();
 
-        verify(historyPointMapper).toEntity(any());
-        verify(historyPointRepository).save(any());
-        verify(historyPointMapper).toResponse(any());
+        verify(historyPointRepository).save(historyPoint);
     }
 
     @Test
     public void historyPointServiceImplUpdate() {
-        when(historyPointRepository.findById(any())).thenReturn(Optional.ofNullable(historyPointBuild));
-        when(historyPointMapper.toEntity(any())).thenReturn(historyPointBuild);
-        when(historyPointRepository.save(any())).thenReturn(historyPointBuild);
-        when(historyPointMapper.toResponse(any())).thenReturn(responseHistoryPointDtoBuild);
+        Long id = 1L;
 
-        ResponseHistoryPointDto responseHistoryPointDto = historyPointService.update(requestHistoryPointDtoBuild, 1L);
+        when(historyPointRepository.findById(id)).thenReturn(Optional.ofNullable(historyPoint));
+        when(historyPointRepository.save(historyPoint)).thenReturn(historyPoint);
 
-        Assertions.assertThat(responseHistoryPointDto).isNotNull();
+        HistoryPoint historyPointUpdate = historyPointService.update(historyPoint, id);
 
-        verify(historyPointRepository).save(any());
-        verify(historyPointMapper).toEntity(any());
-        verify(historyPointRepository).save(any());
-        verify(historyPointMapper).toResponse(any());
+        Assertions.assertThat(historyPointUpdate).isNotNull();
+
+        verify(historyPointRepository).findById(id);
+        verify(historyPointRepository).save(historyPoint);
     }
 
     @Test
     public void historyPointServiceImplDelete() {
-        when(historyPointRepository.findById(any())).thenReturn(Optional.ofNullable(historyPointBuild));
-        doNothing().when(historyPointRepository).delete(historyPointBuild);
+        Long id = 1L;
 
-        assertAll(() -> historyPointService.delete(any()));
+        when(historyPointRepository.findById(id)).thenReturn(Optional.ofNullable(historyPoint));
 
-        verify(historyPointRepository).findById(any());
-        verify(historyPointRepository,times(1)).delete(any());
+        historyPointService.delete(id);
+
+        verify(historyPointRepository).findById(id);
+        verify(historyPointRepository).delete(historyPoint);
     }
 
     @Test
     public void historyPointServiceImplFindById() {
-        when(historyPointRepository.findById(any())).thenReturn(Optional.ofNullable(historyPointBuild));
-        when(historyPointMapper.toResponse(any())).thenReturn(responseHistoryPointDtoBuild);
+        Long id = 1L;
 
-        ResponseHistoryPointDto responseHistoryPointDto = historyPointService.findEntity(any()).get();
+        when(historyPointRepository.findById(id)).thenReturn(Optional.of(historyPoint));
 
-        Assertions.assertThat(responseHistoryPointDto).isNotNull();
+        HistoryPoint departmentResponse = historyPointService.findEntity(id);
 
-        verify(historyPointRepository).findById(any());
-        verify(historyPointMapper).toResponse(any());
+        Assertions.assertThat(departmentResponse).isNotNull();
 
+        verify(historyPointRepository).findById(id);
+    }
+
+    @Test
+    public void entityNotFoundTest() {
+        Long id = 1L;
+        Mockito.when(historyPointRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> historyPointService.update(historyPoint, id));
     }
 
     @Test
     public void historyPointServiceImplFindAll() {
-        Page<HistoryPoint> historyPoints = Mockito.mock();
+        List<HistoryPoint> historyPointList = List.of(historyPoint, historyPoint);
+        Page<HistoryPoint> historyPoints = new PageImpl<>(historyPointList);
+        Pageable pageable = Mockito.mock(Pageable.class);
 
-        when(historyPointRepository.findAll(any(Pageable.class))).thenReturn(historyPoints);
+        when(historyPointRepository.findAll(pageable)).thenReturn(historyPoints);
 
-        List<ResponseHistoryPointDto> all = historyPointService.findAll(1, 10);
+        Page<HistoryPoint> all = historyPointService.findAll(pageable);
 
         Assertions.assertThat(all).isNotNull();
     }

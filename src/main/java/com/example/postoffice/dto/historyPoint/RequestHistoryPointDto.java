@@ -2,9 +2,10 @@ package com.example.postoffice.dto.historyPoint;
 
 import com.example.postoffice.dto.AbstractRequestDto;
 import com.example.postoffice.entity.enums.PointType;
-import jakarta.validation.constraints.*;
+
 import lombok.*;
 
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -22,6 +23,7 @@ public class RequestHistoryPointDto extends AbstractRequestDto implements Serial
     private PointType pointType;
     @PastOrPresent
     private LocalDateTime appointmentDate;
-    @PositiveOrZero
+    @Min(111111)
+    @Max(999999)
     private Integer indexDepartment;
 }

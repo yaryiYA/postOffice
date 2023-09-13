@@ -2,9 +2,10 @@ package com.example.postoffice.dto.historyPoint;
 
 import com.example.postoffice.dto.AbstractResponseDto;
 import com.example.postoffice.entity.enums.PointType;
-import jakarta.validation.constraints.*;
+
 import lombok.*;
 
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -18,10 +19,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class ResponseHistoryPointDto extends AbstractResponseDto implements Serializable {
+
     @NotNull
     private PointType pointType;
     @PastOrPresent
     private LocalDateTime appointmentDate;
-    @PositiveOrZero
+    @Min(111111)
+    @Max(999999)
     private Integer indexDepartment;
 }

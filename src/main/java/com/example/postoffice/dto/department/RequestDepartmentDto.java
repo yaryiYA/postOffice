@@ -2,10 +2,13 @@ package com.example.postoffice.dto.department;
 
 import com.example.postoffice.dto.AbstractRequestDto;
 
-import jakarta.validation.constraints.*;
-import lombok.*;
-import org.hibernate.validator.constraints.Length;
 
+import lombok.*;
+
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 
@@ -23,10 +26,7 @@ public class RequestDepartmentDto extends AbstractRequestDto implements Serializ
     private String name;
     @NotBlank
     private String departmentAddress;
-    @Min(6)
-    @Max(7)
+    @Min(111111)
+    @Max(999999)
     private Integer index;
-
-
-
 }

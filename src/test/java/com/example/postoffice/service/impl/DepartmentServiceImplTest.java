@@ -1,11 +1,6 @@
 package com.example.postoffice.service.impl;
 
-import com.example.postoffice.dto.department.RequestDepartmentDto;
-import com.example.postoffice.dto.department.ResponseDepartmentDto;
-import com.example.postoffice.dto.parsel.ResponseParcelDto;
 import com.example.postoffice.entity.Department;
-import com.example.postoffice.entity.Parcel;
-import com.example.postoffice.mapper.deprtament.DepartmentMapper;
 import com.example.postoffice.repository.impl.DepartmentRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,16 +11,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-
 
 @ExtendWith(MockitoExtension.class)
 class DepartmentServiceImplTest {
@@ -33,29 +27,11 @@ class DepartmentServiceImplTest {
     private DepartmentRepository departmentRepository;
     @InjectMocks
     private DepartmentServiceImpl departmentService;
-    @Mock
-    private DepartmentMapper departmentMapper;
-
-    private Department departmentBuild;
-    private RequestDepartmentDto requestDepartmentDtoBuild;
-    private ResponseDepartmentDto responseDepartmentDtoBuild;
-
+    private Department department;
 
     @BeforeEach
     public void setup() {
-        departmentBuild = Department.builder()
-                .name("test")
-                .departmentAddress("test")
-                .index(123456)
-                .build();
-
-        requestDepartmentDtoBuild = RequestDepartmentDto.builder()
-                .name("test")
-                .departmentAddress("test")
-                .index(123456)
-                .build();
-
-        responseDepartmentDtoBuild = ResponseDepartmentDto.builder()
+        department = Department.builder()
                 .name("test")
                 .departmentAddress("test")
                 .index(123456)
@@ -64,68 +40,63 @@ class DepartmentServiceImplTest {
 
     @Test
     public void departmentServiceImplCreate() {
-        when(departmentMapper.toEntity(any())).thenReturn(departmentBuild);
-        when(departmentRepository.save(any())).thenReturn(departmentBuild);
-        when(departmentMapper.toResponse(any())).thenReturn(responseDepartmentDtoBuild);
+        when(departmentRepository.save(department)).thenReturn(department);
 
-        ResponseDepartmentDto responseDepartmentDto = departmentService.create(requestDepartmentDtoBuild);
+        Department departmentResponse = departmentService.create(department);
 
-        Assertions.assertThat(responseDepartmentDto).isNotNull();
+        Assertions.assertThat(departmentResponse).isNotNull();
 
-        verify(departmentMapper).toEntity(any());
-        verify(departmentRepository).save(any());
-        verify(departmentMapper).toResponse(any());
+        verify(departmentRepository).save(department);
     }
+
 
     @Test
     public void departmentServiceImplUpdate() {
-        when(departmentRepository.findById(any())).thenReturn(Optional.ofNullable(departmentBuild));
-        when(departmentMapper.toEntity(any())).thenReturn(departmentBuild);
-        when(departmentRepository.save(any())).thenReturn(departmentBuild);
-        when(departmentMapper.toResponse(any())).thenReturn(responseDepartmentDtoBuild);
+        long id = 1L;
+        when(departmentRepository.findById(id)).thenReturn(Optional.ofNullable(department));
+        when(departmentRepository.save(department)).thenReturn(department);
 
-        ResponseDepartmentDto responseDepartmentDto = departmentService.update(requestDepartmentDtoBuild, 1L);
+        Department departmentUpdate = departmentService.update(department, id);
 
-        Assertions.assertThat(responseDepartmentDto).isNotNull();
+        Assertions.assertThat(departmentUpdate).isNotNull();
 
-        verify(departmentRepository).save(any());
-        verify(departmentMapper).toEntity(any());
-        verify(departmentRepository).save(any());
-        verify(departmentMapper).toResponse(any());
+        verify(departmentRepository).save(department);
+        verify(departmentRepository).save(department);
     }
+
 
     @Test
     public void departmentServiceImplDelete() {
-        when(departmentRepository.findById(any())).thenReturn(Optional.ofNullable(departmentBuild));
-        doNothing().when(departmentRepository).delete(departmentBuild);
+        long id = 1L;
+        when(departmentRepository.findById(id)).thenReturn(Optional.of(department));
 
-        assertAll(() -> departmentService.delete(any()));
+        departmentService.delete(id);
 
-        verify(departmentRepository).findById(any());
-        verify(departmentRepository,times(1)).delete(any());
+        verify(departmentRepository).findById(id);
+        verify(departmentRepository).delete(department);
     }
 
     @Test
     public void departmentServiceImplFindById() {
-        when(departmentRepository.findById(any())).thenReturn(Optional.ofNullable(departmentBuild));
-        when(departmentMapper.toResponse(any())).thenReturn(responseDepartmentDtoBuild);
+        long id = 1L;
+        when(departmentRepository.findById(id)).thenReturn(Optional.of(department));
 
-        ResponseDepartmentDto responseDepartmentDto = departmentService.findEntity(any()).get();
+        Department departmentResponse = departmentService.findEntity(id);
 
-        Assertions.assertThat(responseDepartmentDto).isNotNull();
+        Assertions.assertThat(departmentResponse).isNotNull();
 
-        verify(departmentRepository).findById(any());
-        verify(departmentMapper).toResponse(any());
-
+        verify(departmentRepository).findById(id);
     }
 
     @Test
     public void departmentServiceImplFindAll() {
-        Page<Department> departments = Mockito.mock();
+        Pageable pageable = Mockito.mock(Pageable.class);
+        List<Department> departmentList = List.of(department, department);
+        Page<Department> departments = new PageImpl<>(departmentList);
 
-        when(departmentRepository.findAll(any(Pageable.class))).thenReturn(departments);
+        when(departmentRepository.findAll(pageable)).thenReturn(departments);
 
-        List<ResponseDepartmentDto> all = departmentService.findAll(1, 10);
+        Page<Department> all = departmentService.findAll(pageable);
 
         Assertions.assertThat(all).isNotNull();
     }
@@ -133,14 +104,21 @@ class DepartmentServiceImplTest {
 
     @Test
     public void departmentServiceImplFindByIndex() {
-        when(departmentRepository.findDepartmentByIndex(any())).thenReturn(Optional.ofNullable(departmentBuild));
-        when(departmentMapper.toResponse(any())).thenReturn(responseDepartmentDtoBuild);
+        int index = 123456;
+        when(departmentRepository.findDepartmentByIndex(index)).thenReturn(Optional.of(department));
 
-        ResponseDepartmentDto responseDepartmentDto = departmentService.findByIndex(any());
+        Department departmentResponse = departmentService.findByIndex(index);
 
-        Assertions.assertThat(responseDepartmentDto).isNotNull();
+        Assertions.assertThat(departmentResponse).isNotNull();
 
-        verify(departmentRepository).findDepartmentByIndex(any());
-        verify(departmentMapper).toResponse(any());
+        verify(departmentRepository).findDepartmentByIndex(index);
+    }
+
+    @Test
+    public void entityNotFoundTest() {
+        Long id = 1L;
+        Mockito.when(departmentRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> departmentService.update(department, id));
     }
 }
