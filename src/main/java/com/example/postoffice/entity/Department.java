@@ -1,7 +1,6 @@
 package com.example.postoffice.entity;
 
 
-
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -15,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @SuperBuilder
 @Table(name = "department")
-public class Department extends AbstractEntity  {
+public class Department extends AbstractEntity {
 
 
     @Column(name = "name", nullable = false)
@@ -24,7 +23,7 @@ public class Department extends AbstractEntity  {
     @Column(name = "department_address", nullable = false)
     private String departmentAddress;
 
-    @Column(name = "index", nullable = false, unique = true,length = 6)
+    @Column(name = "index", nullable = false, unique = true, length = 6)
     private Integer index;
 
 

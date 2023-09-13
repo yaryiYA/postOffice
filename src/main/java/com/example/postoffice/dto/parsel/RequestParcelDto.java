@@ -2,7 +2,6 @@ package com.example.postoffice.dto.parsel;
 
 import com.example.postoffice.dto.AbstractRequestDto;
 import com.example.postoffice.dto.historyPoint.RequestHistoryPointDto;
-import com.example.postoffice.entity.HistoryPoint;
 import com.example.postoffice.entity.enums.ParcelType;
 
 import lombok.*;

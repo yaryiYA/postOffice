@@ -1,7 +1,6 @@
 package com.example.postoffice.exception;
 
 
-
 import org.springframework.dao.DataIntegrityViolationException;
 
 import org.springframework.http.HttpHeaders;
@@ -38,14 +37,14 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
             listErrors.add(defaultMessage);
         }
 
-        ApiError<?> response = new ApiError<>( (HttpStatus) status, listErrors);
+        ApiError<?> response = new ApiError<>((HttpStatus) status, listErrors);
         return new ResponseEntity<>(response, status);
     }
 
-    @ExceptionHandler({ EntityNotFoundException.class})
+    @ExceptionHandler({EntityNotFoundException.class})
     protected ResponseEntity<ApiError<?>> notFoundException(Exception exception) {
-        return  ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ApiError<>(HttpStatus.NOT_FOUND,exception.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiError<>(HttpStatus.NOT_FOUND, exception.getMessage()));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

@@ -1,9 +1,7 @@
 package com.example.postoffice.mapper.parcel;
 
-import com.example.postoffice.dto.historyPoint.ResponseHistoryPointDto;
 import com.example.postoffice.dto.parsel.RequestParcelDto;
 import com.example.postoffice.dto.parsel.ResponseParcelDto;
-import com.example.postoffice.entity.HistoryPoint;
 import com.example.postoffice.entity.Parcel;
 import com.example.postoffice.entity.enums.ParcelType;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class ParcelMapperTest {
 
@@ -50,14 +47,14 @@ class ParcelMapperTest {
     public void departmentMapperToEntity() {
         Parcel entity = parcelMapper.toEntity(requestParcelDto);
 
-        Assertions.assertEquals(entity.getParcelType(),requestParcelDto.getParcelType());
+        Assertions.assertEquals(entity.getParcelType(), requestParcelDto.getParcelType());
     }
 
     @Test
     public void departmentMapperToResponse() {
         ResponseParcelDto response = parcelMapper.toResponse(parcel);
 
-        Assertions.assertEquals(response.getParcelType(),parcel.getParcelType());
+        Assertions.assertEquals(response.getParcelType(), parcel.getParcelType());
     }
 
     @Test
@@ -67,6 +64,6 @@ class ParcelMapperTest {
 
         Parcel parcelResponse = parcelMapper.partialUpdate(requestParcelDto, parcel);
 
-        Assertions.assertEquals(parcelResponse.getLastName(),value);
+        Assertions.assertEquals(parcelResponse.getLastName(), value);
     }
 }

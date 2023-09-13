@@ -5,7 +5,6 @@ import com.example.postoffice.dto.AbstractRequestDto;
 
 import lombok.*;
 
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;

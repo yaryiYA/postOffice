@@ -10,6 +10,4 @@
     <include file="/db/changelog/init-changelog.xml"/>
     <include file="/db/changelog/add_value-changelog.xml"/>
 
-
-
 </databaseChangeLog>

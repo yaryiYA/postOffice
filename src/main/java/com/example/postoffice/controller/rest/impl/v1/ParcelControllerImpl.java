@@ -24,7 +24,7 @@ import static com.example.postoffice.entity.enums.PointType.DELIVERED;
 @Validated
 @RestController
 @RequestMapping("/api/v1/parcel")
-public class    ParcelControllerImpl extends BaseController<Parcel,
+public class ParcelControllerImpl extends BaseController<Parcel,
         RequestParcelDto,
         ResponseParcelDto,
         ParcelServiceImpl,

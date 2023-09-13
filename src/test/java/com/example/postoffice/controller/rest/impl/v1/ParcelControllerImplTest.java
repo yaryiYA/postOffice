@@ -13,13 +13,11 @@ import com.example.postoffice.mapper.parcel.ParcelMapperImpl;
 import com.example.postoffice.service.impl.ParcelServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
@@ -30,7 +28,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = ParcelControllerImpl.class)
-
 class ParcelControllerImplTest {
 
     @Autowired
@@ -56,7 +52,6 @@ class ParcelControllerImplTest {
     private Parcel parcel;
     private RequestParcelDto requestParcelDto;
     private ResponseParcelDto responseParcelDto;
-
 
 
     @BeforeEach
@@ -139,7 +134,7 @@ class ParcelControllerImplTest {
 
         ResultActions response = mockMvc.perform(get("/api/v1/parcel/get")
                 .contentType(MediaType.APPLICATION_JSON)
-                        .param("id", String.valueOf(id))
+                .param("id", String.valueOf(id))
                 .content(objectMapper.writeValueAsString(requestParcelDto))
                 .characterEncoding("utf-8"));
 
@@ -149,13 +144,12 @@ class ParcelControllerImplTest {
     }
 
 
-
     @Test
     void registrationParcel() throws Exception {
         int index = 1234556;
 
         when((mapper.toEntity(requestParcelDto))).thenReturn(parcel);
-        when(parcelService.registrationParcel(parcel,index)).thenReturn(parcel);
+        when(parcelService.registrationParcel(parcel, index)).thenReturn(parcel);
         when(mapper.toResponse(parcel)).thenReturn(responseParcelDto);
 
         ResultActions response = mockMvc.perform(post("/api/v1/parcel/registration")
@@ -172,7 +166,7 @@ class ParcelControllerImplTest {
         int index = 1234556;
         long idParcel = 1L;
 
-        when(parcelService.arriveAtDepartment(idParcel,index)).thenReturn(parcel);
+        when(parcelService.arriveAtDepartment(idParcel, index)).thenReturn(parcel);
         when(parcelService.findEntity(idParcel)).thenReturn(parcel);
         when(mapper.toResponse(parcel)).thenReturn(responseParcelDto);
 
@@ -231,7 +225,7 @@ class ParcelControllerImplTest {
         long idParcel = 1L;
         HistoryPoint historyPoint1 = new HistoryPoint();
         HistoryPoint historyPoint2 = new HistoryPoint();
-        List<HistoryPoint> list = List.of(historyPoint1,historyPoint2);
+        List<HistoryPoint> list = List.of(historyPoint1, historyPoint2);
 
         when(parcelService.getHistoryParcel(idParcel)).thenReturn(list);
         when(historyPointMapper.toResponse(historyPoint1)).thenReturn(new ResponseHistoryPointDto());
