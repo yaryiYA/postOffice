@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 
 
 @Service
@@ -23,7 +24,10 @@ public class DepartmentServiceImpl
     }
 
     public Department findByIndex(Integer indexDepartment) {
-        return super.repository.findDepartmentByIndex(indexDepartment)
-                .orElseThrow(() -> new EntityNotFoundException("Department not found"));
+        Optional<Department> department = super.repository.findDepartmentByIndex(indexDepartment);
+        if (department.isPresent()) {
+            return department.get();
+        }
+        throw new EntityNotFoundException("Department not found");
     }
 }

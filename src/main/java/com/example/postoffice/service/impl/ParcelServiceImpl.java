@@ -13,8 +13,8 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -25,17 +25,14 @@ public class ParcelServiceImpl
 
 
     private final DepartmentServiceImpl departmentService;
-    private final HistoryPointServiceImpl historyPointService;
+
+
     @Autowired
     public ParcelServiceImpl(ParcelRepository repository,
-                             DepartmentServiceImpl departmentService, HistoryPointServiceImpl historyPointService) {
+                             DepartmentServiceImpl departmentService) {
         super(repository);
         this.departmentService = departmentService;
-
-        this.historyPointService = historyPointService;
     }
-
-
 
     public Parcel registrationParcel(@Valid Parcel parcel, Integer startIndexDepartment) {
         departmentService.findByIndex(startIndexDepartment);
@@ -44,38 +41,50 @@ public class ParcelServiceImpl
 
     public Parcel arriveAtDepartment(Long identifierParcel, Integer departmentIndex) {
         departmentService.findByIndex(departmentIndex);
-        Parcel parcelRep = super.repository.findById(identifierParcel)
-                .orElseThrow(() -> new EntityNotFoundException("Parcel not found"));
+        Optional<Parcel> parcelRep = super.repository.findById(identifierParcel);
 
-        return addEventParcel(parcelRep, departmentIndex, PointType.ARRIVED);
+        if (parcelRep.isPresent()) {
+            addEventParcel(parcelRep.get(), departmentIndex, PointType.ARRIVED);
+            return parcelRep.get();
+        }
+        throw new EntityNotFoundException("parcel not found");
     }
 
     public Parcel leaveDepartment(Long identifierParcel) {
-        Parcel parcel = super.repository.findById(identifierParcel)
-                .orElseThrow(() -> new EntityNotFoundException("Parcel not found"));
-        Integer index = checkEndIndex(parcel);
+        Optional<Parcel> parcelRep = super.repository.findById(identifierParcel);
 
-        return addEventParcel(parcel, index, PointType.DEPARTURE);
+        if (parcelRep.isPresent()) {
+            Integer index = checkEndIndex(parcelRep.get());
+            addEventParcel(parcelRep.get(), index, PointType.DEPARTURE);
+            return parcelRep.get();
+        }
+        throw new EntityNotFoundException("parcel not found");
     }
 
     public Parcel deliveryToRecipient(Long identifierParcel) {
-        Parcel parcel = super.repository.findById(identifierParcel)
-                .orElseThrow(() -> new EntityNotFoundException("Parcel not found"));
-        Integer index = checkEndIndex(parcel);
+        Optional<Parcel> parcelRep = super.repository.findById(identifierParcel);
 
-        return addEventParcel(parcel, index, PointType.DELIVERED);
+        if (parcelRep.isPresent()) {
+            Integer index = checkEndIndex(parcelRep.get());
+            addEventParcel(parcelRep.get(), index, PointType.DELIVERED);
+            return parcelRep.get();
+        }
+        throw new EntityNotFoundException("parcel not found");
     }
 
     public List<HistoryPoint> getHistoryParcel(Long identifierParcel) {
-        Parcel parcel = super.repository.findById(identifierParcel)
-                .orElseThrow(() -> new EntityNotFoundException("Parcel not found"));
+        Optional<Parcel> parcelRep = super.repository.findById(identifierParcel);
 
-        return parcel.getHistoryPoints();
+        if (parcelRep.isPresent()) {
+            return parcelRep.get().getHistoryPoints();
+        }
+        throw new EntityNotFoundException("parcel not found");
     }
 
     private Parcel addEventParcel(Parcel parcel, Integer departmentIndex, PointType pointType) {
-        HistoryPoint historyPoint = new HistoryPoint(pointType, LocalDateTime.now(), departmentIndex);
-//        historyPointService.create(historyPoint);
+        HistoryPoint historyPoint = HistoryPoint.builder()
+                .pointType(pointType)
+                .indexDepartment(departmentIndex).build();
 
         List<HistoryPoint> historyPoints = parcel.getHistoryPoints();
         historyPoints.add(historyPoint);

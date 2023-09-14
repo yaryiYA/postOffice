@@ -24,7 +24,7 @@ public class RequestParcelDto extends AbstractRequestDto implements Serializable
     private Long identifier;
     @NotNull
     private ParcelType parcelType;
-    @Min(111111)
+    @Min(100000)
     @Max(999999)
     private Integer recipientIndex;
     @NotBlank
@@ -33,5 +33,4 @@ public class RequestParcelDto extends AbstractRequestDto implements Serializable
     private String firstName;
     @NotBlank
     private String lastName;
-    private List<RequestHistoryPointDto> historyPoints = new ArrayList<>();
 }

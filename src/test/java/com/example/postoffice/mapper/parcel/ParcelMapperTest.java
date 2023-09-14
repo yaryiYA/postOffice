@@ -38,7 +38,6 @@ class ParcelMapperTest {
                 .recipientAddress("test")
                 .firstName("ivan")
                 .lastName("ivanov")
-                .historyPoints(new ArrayList<>())
                 .build();
     }
 

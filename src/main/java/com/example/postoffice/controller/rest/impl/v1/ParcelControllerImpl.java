@@ -5,6 +5,7 @@ import com.example.postoffice.dto.historyPoint.ResponseHistoryPointDto;
 import com.example.postoffice.dto.parsel.RequestParcelDto;
 import com.example.postoffice.dto.parsel.ResponseParcelDto;
 import com.example.postoffice.entity.Parcel;
+import com.example.postoffice.exception.DeliveryException;
 import com.example.postoffice.mapper.historyPoint.HistoryPointMapperImpl;
 import com.example.postoffice.mapper.parcel.ParcelMapperImpl;
 import com.example.postoffice.service.impl.ParcelServiceImpl;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -40,7 +43,7 @@ public class ParcelControllerImpl extends BaseController<Parcel,
     }
 
     @PostMapping("/registration")
-    ResponseEntity<ResponseParcelDto> registrationParcel(@RequestBody @Valid RequestParcelDto requestParcelDto,
+    public ResponseEntity<ResponseParcelDto> registrationParcel(@RequestBody @Valid RequestParcelDto requestParcelDto,
                                                          @RequestParam(value = "index") @PositiveOrZero Integer index) {
         Parcel parcel = mapper.toEntity(requestParcelDto);
 
@@ -48,30 +51,30 @@ public class ParcelControllerImpl extends BaseController<Parcel,
     }
 
     @GetMapping("/arrive")
-    ResponseEntity<?> arriveAtDepartment(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel,
+    public ResponseEntity<?> arriveAtDepartment(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel,
                                          @RequestParam(value = "index") Integer indexDepartment) {
         if (sendBlockingParcel(identifierParcel)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("letter has been delivered");
+             throw new DeliveryException("letter has been delivered");
         }
         ResponseParcelDto response = mapper.toResponse(service.arriveAtDepartment(identifierParcel, indexDepartment));
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/leave")
-    ResponseEntity<?> leaveAtDepartment(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel) {
+    public ResponseEntity<?> leaveAtDepartment(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel) {
         if (sendBlockingParcel(identifierParcel)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("letter has been delivered");
+            throw new DeliveryException("letter has been delivered");
         }
         return ResponseEntity.ok(mapper.toResponse(service.leaveDepartment(identifierParcel)));
     }
 
     @GetMapping("/delivery")
-    ResponseEntity<ResponseParcelDto> deliveryToRecipient(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel) {
+    public ResponseEntity<ResponseParcelDto> deliveryToRecipient(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel) {
         return ResponseEntity.ok(mapper.toResponse(service.deliveryToRecipient(identifierParcel)));
     }
 
     @GetMapping("/history")
-    ResponseEntity<List<ResponseHistoryPointDto>> getHistoryParcel(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel) {
+    public ResponseEntity<List<ResponseHistoryPointDto>> getHistoryParcel(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel) {
         List<ResponseHistoryPointDto> responseHistoryPointDtos = service.getHistoryParcel(identifierParcel).stream()
                 .map(historyPointMapper::toResponse).toList();
 
@@ -82,6 +85,5 @@ public class ParcelControllerImpl extends BaseController<Parcel,
         return super.service.findEntity(identifier).getHistoryPoints().stream()
                 .anyMatch(historyPoint -> historyPoint.getPointType() == DELIVERED);
     }
-
 
 }

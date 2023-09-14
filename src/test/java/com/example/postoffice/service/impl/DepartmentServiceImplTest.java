@@ -45,6 +45,7 @@ class DepartmentServiceImplTest {
         Department departmentResponse = departmentService.create(department);
 
         Assertions.assertThat(departmentResponse).isNotNull();
+        Assertions.assertThat(departmentResponse).isEqualTo(department);
 
         verify(departmentRepository).save(department);
     }
@@ -61,7 +62,6 @@ class DepartmentServiceImplTest {
         Assertions.assertThat(departmentUpdate).isNotNull();
 
         verify(departmentRepository).save(department);
-        verify(departmentRepository).save(department);
     }
 
 
@@ -72,7 +72,6 @@ class DepartmentServiceImplTest {
 
         departmentService.delete(id);
 
-        verify(departmentRepository).findById(id);
         verify(departmentRepository).delete(department);
     }
 

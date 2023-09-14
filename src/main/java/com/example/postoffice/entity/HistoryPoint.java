@@ -4,6 +4,8 @@ import com.example.postoffice.entity.enums.PointType;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.PositiveOrZero;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "transaction_history_point")
 
 public class HistoryPoint extends AbstractEntity {
@@ -25,10 +28,12 @@ public class HistoryPoint extends AbstractEntity {
     private PointType pointType;
 
     @Column(name = "appointment_date")
+    @CreatedDate
     private LocalDateTime appointmentDate;
 
     @PositiveOrZero
     @Column(name = "index_department")
-
     private Integer indexDepartment;
+
+
 }

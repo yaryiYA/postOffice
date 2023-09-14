@@ -30,7 +30,6 @@ class HistoryPointMapperTest {
 
         requestHistoryPointDto = RequestHistoryPointDto.builder()
                 .indexDepartment(123456)
-                .appointmentDate(LocalDateTime.now())
                 .build();
     }
 

@@ -21,9 +21,7 @@ import java.time.LocalDateTime;
 public class RequestHistoryPointDto extends AbstractRequestDto implements Serializable {
     @NotNull
     private PointType pointType;
-    @PastOrPresent
-    private LocalDateTime appointmentDate;
-    @Min(111111)
+    @Min(100000)
     @Max(999999)
     private Integer indexDepartment;
 }

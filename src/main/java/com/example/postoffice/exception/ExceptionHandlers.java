@@ -8,10 +8,12 @@ import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.lang.NonNull;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -21,15 +23,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@RestControllerAdvice
+@ControllerAdvice
 public class ExceptionHandlers extends ResponseEntityExceptionHandler {
 
 
     @Override
+    @NonNull
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers,
-                                                                  HttpStatus status,
-                                                                  WebRequest request) {
+                                                                  @NonNull HttpHeaders headers,
+                                                                  @NonNull HttpStatus status,
+                                                                  @NonNull WebRequest request) {
         List<String> listErrors = new ArrayList<>();
         List<FieldError> fieldError = ex.getBindingResult().getFieldErrors();
         for (FieldError error : fieldError) {
@@ -37,11 +40,11 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
             listErrors.add(defaultMessage);
         }
 
-        ApiError<?> response = new ApiError<>((HttpStatus) status, listErrors);
+        ApiError<?> response = new ApiError<>(status, listErrors);
         return new ResponseEntity<>(response, status);
     }
 
-    @ExceptionHandler({EntityNotFoundException.class})
+    @ExceptionHandler({EntityNotFoundException.class,DeliveryException.class})
     protected ResponseEntity<ApiError<?>> notFoundException(Exception exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ApiError<>(HttpStatus.NOT_FOUND, exception.getMessage()));
@@ -55,7 +58,7 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ApiError<?>> unacceptableSituation(IllegalStateException exception) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiError<>(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiError<>(HttpStatus.BAD_REQUEST, exception.getMessage()));
     }
 }

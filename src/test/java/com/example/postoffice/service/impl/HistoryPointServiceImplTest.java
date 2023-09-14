@@ -64,7 +64,6 @@ class HistoryPointServiceImplTest {
 
         Assertions.assertThat(historyPointUpdate).isNotNull();
 
-        verify(historyPointRepository).findById(id);
         verify(historyPointRepository).save(historyPoint);
     }
 

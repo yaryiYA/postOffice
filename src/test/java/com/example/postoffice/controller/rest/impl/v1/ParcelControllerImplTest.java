@@ -45,7 +45,7 @@ class ParcelControllerImplTest {
     @MockBean
     private ParcelServiceImpl parcelService;
     @MockBean
-    HistoryPointMapperImpl historyPointMapper;
+    private HistoryPointMapperImpl historyPointMapper;
     @MockBean
     private ParcelMapperImpl mapper;
 
@@ -73,7 +73,6 @@ class ParcelControllerImplTest {
                 .recipientAddress("test")
                 .firstName("ivan")
                 .lastName("ivanov")
-                .historyPoints(new ArrayList<>())
                 .build();
 
         responseParcelDto = ResponseParcelDto.builder()

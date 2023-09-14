@@ -24,7 +24,7 @@ public class ResponseHistoryPointDto extends AbstractResponseDto implements Seri
     private PointType pointType;
     @PastOrPresent
     private LocalDateTime appointmentDate;
-    @Min(111111)
+    @Min(100000)
     @Max(999999)
     private Integer indexDepartment;
 }

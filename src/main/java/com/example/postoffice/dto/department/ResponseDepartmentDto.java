@@ -24,7 +24,7 @@ public class ResponseDepartmentDto extends AbstractResponseDto implements Serial
     private String name;
     @NotBlank
     private String departmentAddress;
-    @Min(111111)
+    @Min(100000)
     @Max(999999)
     private Integer index;
 }
