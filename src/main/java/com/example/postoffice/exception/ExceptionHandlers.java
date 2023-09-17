@@ -1,8 +1,11 @@
 package com.example.postoffice.exception;
 
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
@@ -50,14 +53,15 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
                 .body(new ApiError<>(HttpStatus.NOT_FOUND, exception.getMessage()));
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ExceptionHandler({DataIntegrityViolationException.class, OptimisticLockingFailureException.class})
     public ResponseEntity<ApiError<?>> saveException(DataIntegrityViolationException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ApiError<>(HttpStatus.CONFLICT, exception.getCause().getMessage()));
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ApiError<?>> unacceptableSituation(IllegalStateException exception) {
+    @ExceptionHandler({IllegalStateException.class})
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public ResponseEntity<ApiError<?>> handleIllegalStateException(IllegalStateException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiError<>(HttpStatus.BAD_REQUEST, exception.getMessage()));
     }

@@ -1,4 +1,4 @@
-package com.example.postoffice.service.impl;
+package com.example.postoffice.service.impl.parcelService.impl;
 
 import com.example.postoffice.entity.HistoryPoint;
 import com.example.postoffice.entity.Parcel;
@@ -6,13 +6,16 @@ import com.example.postoffice.entity.enums.PointType;
 import com.example.postoffice.repository.impl.ParcelRepository;
 import com.example.postoffice.service.BaseService;
 
+import com.example.postoffice.service.impl.departmentService.DepartmentService;
+import com.example.postoffice.service.impl.departmentService.impl.DepartmentServiceImpl;
+import com.example.postoffice.service.impl.parcelService.ParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +24,10 @@ import java.util.Optional;
 @Validated
 public class ParcelServiceImpl
         extends BaseService<Parcel,
-        ParcelRepository> {
+        ParcelRepository> implements ParcelService {
 
 
-    private final DepartmentServiceImpl departmentService;
+    private final DepartmentService departmentService;
 
 
     @Autowired
@@ -34,7 +37,7 @@ public class ParcelServiceImpl
         this.departmentService = departmentService;
     }
 
-    public Parcel registrationParcel(@Valid Parcel parcel, Integer startIndexDepartment) {
+    public Parcel registrationParcel(Parcel parcel, Integer startIndexDepartment) {
         departmentService.findByIndex(startIndexDepartment);
         return addEventParcel(parcel, startIndexDepartment, PointType.REGISTRATION);
     }
@@ -86,11 +89,14 @@ public class ParcelServiceImpl
                 .pointType(pointType)
                 .indexDepartment(departmentIndex).build();
 
+        if (parcel.getHistoryPoints() == null) {
+            parcel.setHistoryPoints(new ArrayList<>());
+        }
+
         List<HistoryPoint> historyPoints = parcel.getHistoryPoints();
         historyPoints.add(historyPoint);
         parcel.setHistoryPoints(historyPoints);
-
-        return repository.save(parcel);
+            return repository.save(parcel);
     }
 
     private Integer checkEndIndex(Parcel parcel) {

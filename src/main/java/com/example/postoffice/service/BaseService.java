@@ -19,7 +19,7 @@ public abstract class BaseService<E extends AbstractEntity,
         R extends CommonRepository<E>>
         implements CommonService<E> {
 
-    protected final R   repository;
+    protected final R repository;
 
 
     @Autowired

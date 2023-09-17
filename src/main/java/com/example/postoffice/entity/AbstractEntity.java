@@ -1,11 +1,9 @@
 package com.example.postoffice.entity;
 
-
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-
 
 @MappedSuperclass
 @Getter
@@ -18,4 +16,6 @@ public abstract class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Version
+    private Long version;
 }

@@ -1,5 +1,6 @@
 package com.example.postoffice.service.impl;
 
+import com.example.postoffice.service.impl.HistoryPointService.impl.HistoryPointServiceImpl;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.postoffice.entity.HistoryPoint;
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityNotFoundException;
@@ -102,9 +104,9 @@ class HistoryPointServiceImplTest {
 
     @Test
     public void historyPointServiceImplFindAll() {
+        Pageable pageable = PageRequest.of(0, 10);
         List<HistoryPoint> historyPointList = List.of(historyPoint, historyPoint);
         Page<HistoryPoint> historyPoints = new PageImpl<>(historyPointList);
-        Pageable pageable = Mockito.mock(Pageable.class);
 
         when(historyPointRepository.findAll(pageable)).thenReturn(historyPoints);
 

@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
 @EntityListeners(AuditingEntityListener.class)
+@Entity
 @Table(name = "transaction_history_point")
 
 public class HistoryPoint extends AbstractEntity {

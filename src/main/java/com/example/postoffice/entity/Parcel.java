@@ -1,8 +1,6 @@
 package com.example.postoffice.entity;
 
 import com.example.postoffice.entity.enums.ParcelType;
-
-
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -12,10 +10,10 @@ import java.util.List;
 
 @Getter
 @Setter
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@Entity
 @Table(name = "parcel")
 public class Parcel extends AbstractEntity {
 
@@ -34,7 +32,7 @@ public class Parcel extends AbstractEntity {
 
     @Column(name = "last_name", nullable = false)
     private String lastName;
-
+    @Builder.Default
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<HistoryPoint> historyPoints = new ArrayList<>();
 }

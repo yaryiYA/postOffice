@@ -1,11 +1,12 @@
-package com.example.postoffice.controller.rest.impl.v1;
+package com.example.postoffice.controller.rest.impl.v1.departmentController.impl;
 
 import com.example.postoffice.controller.rest.BaseController;
+import com.example.postoffice.controller.rest.impl.v1.departmentController.DepartmentController;
 import com.example.postoffice.dto.department.RequestDepartmentDto;
 import com.example.postoffice.dto.department.ResponseDepartmentDto;
 import com.example.postoffice.entity.Department;
 import com.example.postoffice.mapper.deprtament.DepartmentMapperImpl;
-import com.example.postoffice.service.impl.DepartmentServiceImpl;
+import com.example.postoffice.service.impl.departmentService.impl.DepartmentServiceImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +16,8 @@ public class DepartmentControllerImpl extends BaseController<Department,
         RequestDepartmentDto,
         ResponseDepartmentDto,
         DepartmentServiceImpl,
-        DepartmentMapperImpl> {
+        DepartmentMapperImpl>
+        implements DepartmentController {
 
 
     protected DepartmentControllerImpl(DepartmentServiceImpl service, DepartmentMapperImpl mapper) {

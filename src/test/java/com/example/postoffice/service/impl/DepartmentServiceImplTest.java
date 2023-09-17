@@ -2,6 +2,7 @@ package com.example.postoffice.service.impl;
 
 import com.example.postoffice.entity.Department;
 import com.example.postoffice.repository.impl.DepartmentRepository;
+import com.example.postoffice.service.impl.departmentService.impl.DepartmentServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityNotFoundException;
@@ -89,7 +91,7 @@ class DepartmentServiceImplTest {
 
     @Test
     public void departmentServiceImplFindAll() {
-        Pageable pageable = Mockito.mock(Pageable.class);
+        Pageable pageable = PageRequest.of(0, 10);
         List<Department> departmentList = List.of(department, department);
         Page<Department> departments = new PageImpl<>(departmentList);
 

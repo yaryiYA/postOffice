@@ -1,16 +1,16 @@
 package com.example.postoffice.controller.rest.impl.v1;
 
+import com.example.postoffice.controller.rest.impl.v1.parcelController.impl.ParcelControllerImpl;
 import com.example.postoffice.dto.historyPoint.ResponseHistoryPointDto;
 import com.example.postoffice.dto.parsel.RequestParcelDto;
 import com.example.postoffice.dto.parsel.ResponseParcelDto;
 import com.example.postoffice.entity.HistoryPoint;
 import com.example.postoffice.entity.Parcel;
-import com.example.postoffice.entity.enums.EntitySort;
 import com.example.postoffice.entity.enums.ParcelType;
 
 import com.example.postoffice.mapper.historyPoint.HistoryPointMapperImpl;
 import com.example.postoffice.mapper.parcel.ParcelMapperImpl;
-import com.example.postoffice.service.impl.ParcelServiceImpl;
+import com.example.postoffice.service.impl.parcelService.impl.ParcelServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -36,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = ParcelControllerImpl.class)
+@MockBean(JpaMetamodelMappingContext.class)
 class ParcelControllerImplTest {
 
     @Autowired
@@ -46,6 +48,7 @@ class ParcelControllerImplTest {
     private ParcelServiceImpl parcelService;
     @MockBean
     private HistoryPointMapperImpl historyPointMapper;
+
     @MockBean
     private ParcelMapperImpl mapper;
 
@@ -106,17 +109,18 @@ class ParcelControllerImplTest {
     public void ParcelControllerFindAll() throws Exception {
         int offset = 0;
         int limit = 10;
-        Sort sortValue = EntitySort.ID_ASC.getSortValue();
+        Sort.Order order = Sort.Order.by("id").with(Sort.Direction.ASC);
+
         List<Parcel> parcels = List.of(parcel, parcel);
         Page<Parcel> page = new PageImpl<>(parcels);
-        Pageable pageable = PageRequest.of(offset, limit, sortValue);
+        Pageable pageable = PageRequest.of(offset, limit, Sort.by(order));
 
         when(parcelService.findAll(pageable)).thenReturn(page);
 
         ResultActions response = mockMvc.perform(get("/api/v1/parcel/all")
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit))
-                .param("param", String.valueOf(sortValue))
+                .param("param", String.valueOf(Sort.Direction.ASC))
                 .characterEncoding("utf-8"));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())

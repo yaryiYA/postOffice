@@ -33,5 +33,6 @@ public class ResponseParcelDto extends AbstractResponseDto implements Serializab
     private String firstName;
     @NotBlank
     private String lastName;
+    @Builder.Default
     private List<ResponseHistoryPointDto> historyPoints = new ArrayList<>();
 }

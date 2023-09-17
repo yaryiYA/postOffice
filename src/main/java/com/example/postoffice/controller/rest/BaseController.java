@@ -3,16 +3,11 @@ package com.example.postoffice.controller.rest;
 import com.example.postoffice.dto.AbstractRequestDto;
 import com.example.postoffice.dto.AbstractResponseDto;
 import com.example.postoffice.entity.AbstractEntity;
-import com.example.postoffice.entity.enums.EntitySort;
 import com.example.postoffice.mapper.CommonMapper;
 import com.example.postoffice.service.CommonService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.*;
 
 import java.util.List;
-
 
 public abstract class BaseController<E extends AbstractEntity,
         Q extends AbstractRequestDto,
@@ -30,35 +25,37 @@ public abstract class BaseController<E extends AbstractEntity,
     }
 
     @Override
-    public ResponseEntity<Page<S>> getAll(Integer offset, Integer limit, EntitySort sort) {
+    public Page<S> getAll(Integer offset, Integer limit, String sort) {
+        Sort.Direction direction = Sort.Direction.valueOf(sort);
+        Sort.Order order = Sort.Order.by("id").with(direction);
+        Pageable pageable = PageRequest.of(offset, limit, Sort.by(order));
 
-        List<S> list = service.findAll(PageRequest.of(offset, limit, sort.getSortValue())).stream()
+        List<S> list = service.findAll(pageable).stream()
                 .map(mapper::toResponse).toList();
-        return ResponseEntity.ok(new PageImpl<>(list));
+        return new PageImpl<>(list);
     }
 
     @Override
-    public ResponseEntity<?> getEntity(Long id) {
-        return ResponseEntity.ok(mapper.toResponse(service.findEntity(id)));
+    public S getEntity(Long id) {
+        return mapper.toResponse(service.findEntity(id));
     }
 
     @Override
-    public ResponseEntity<?> createEntity(Q requestEntity) {
+    public S createEntity(Q requestEntity) {
         E entity = mapper.toEntity(requestEntity);
-        S responseEntity = mapper.toResponse(service.create(entity));
-        return ResponseEntity.ok(responseEntity);
+        return mapper.toResponse(service.create(entity));
     }
 
     @Override
-    public ResponseEntity<?> updateEntity(Q requestEntity, Long id) {
+    public S updateEntity(Q requestEntity, Long id) {
         E entity = mapper.toEntity(requestEntity);
-        S responseEntity = mapper.toResponse(service.update(entity, id));
-        return ResponseEntity.ok(responseEntity);
+        return mapper.toResponse(service.update(entity, id));
     }
 
     @Override
-    public ResponseEntity<String> deleteEntity(Long id) {
+    public String deleteEntity(Long id) {
         service.delete(id);
-        return ResponseEntity.ok("Entity was deleted");
+        String value = "Entity was deleted";
+        return value;
     }
 }
