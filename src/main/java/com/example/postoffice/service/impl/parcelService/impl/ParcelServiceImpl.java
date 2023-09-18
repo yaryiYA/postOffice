@@ -8,7 +8,6 @@ import com.example.postoffice.repository.impl.ParcelRepository;
 import com.example.postoffice.service.BaseService;
 
 import com.example.postoffice.service.impl.departmentService.DepartmentService;
-import com.example.postoffice.service.impl.departmentService.impl.DepartmentServiceImpl;
 import com.example.postoffice.service.impl.parcelService.ParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

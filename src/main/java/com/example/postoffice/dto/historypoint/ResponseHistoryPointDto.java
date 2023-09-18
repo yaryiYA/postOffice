@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class ResponseHistoryPointDto extends AbstractResponseDto implements Serializable {
-
     @NotNull
     private PointType pointType;
     @PastOrPresent

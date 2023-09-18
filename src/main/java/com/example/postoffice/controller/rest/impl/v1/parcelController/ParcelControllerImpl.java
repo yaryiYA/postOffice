@@ -5,7 +5,6 @@ import com.example.postoffice.dto.historypoint.ResponseHistoryPointDto;
 import com.example.postoffice.dto.parsel.RequestParcelDto;
 import com.example.postoffice.dto.parsel.ResponseParcelDto;
 import com.example.postoffice.entity.Parcel;
-import com.example.postoffice.exception.DeliveryException;
 import com.example.postoffice.mapper.historyPoint.HistoryPointMapperImpl;
 import com.example.postoffice.mapper.parcel.ParcelMapperImpl;
 import com.example.postoffice.service.impl.parcelService.ParcelService;
@@ -19,7 +18,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-import static com.example.postoffice.entity.enums.PointType.DELIVERED;
 
 @Validated
 @RestController

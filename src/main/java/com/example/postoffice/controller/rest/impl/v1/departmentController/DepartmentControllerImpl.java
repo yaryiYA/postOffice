@@ -18,8 +18,8 @@ public class DepartmentControllerImpl extends BaseController<Department,
         DepartmentServiceImpl,
         DepartmentMapperImpl>
         implements CommonController<Department,
-                RequestDepartmentDto,
-                ResponseDepartmentDto> {
+        RequestDepartmentDto,
+        ResponseDepartmentDto> {
 
 
     protected DepartmentControllerImpl(DepartmentServiceImpl service, DepartmentMapperImpl mapper) {

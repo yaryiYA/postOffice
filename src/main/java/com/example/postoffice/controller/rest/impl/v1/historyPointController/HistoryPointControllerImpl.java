@@ -18,7 +18,7 @@ public class HistoryPointControllerImpl extends BaseController<HistoryPoint,
         ResponseHistoryPointDto,
         HistoryPointServiceImpl,
         HistoryPointMapperImpl>
-implements CommonController<HistoryPoint,
+        implements CommonController<HistoryPoint,
         RequestHistoryPointDto,
         ResponseHistoryPointDto> {
     @Autowired
