@@ -49,18 +49,12 @@ public class ParcelControllerImpl extends BaseController<Parcel,
     @GetMapping("/arrive")
     public ResponseParcelDto arriveAtDepartment(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel,
                                                 @RequestParam(value = "index") Integer indexDepartment) {
-        if (sendBlockingParcel(identifierParcel)) {
-            throw new DeliveryException("letter has been delivered");
-        }
 
         return mapper.toResponse(service.arriveAtDepartment(identifierParcel, indexDepartment));
     }
 
     @GetMapping("/leave")
     public ResponseParcelDto leaveAtDepartment(@RequestParam(value = "identifierParcel") @PositiveOrZero Long identifierParcel) {
-        if (sendBlockingParcel(identifierParcel)) {
-            throw new DeliveryException("letter has been delivered");
-        }
         return mapper.toResponse(service.leaveDepartment(identifierParcel));
     }
 
@@ -76,8 +70,5 @@ public class ParcelControllerImpl extends BaseController<Parcel,
                 .map(historyPointMapper::toResponse).toList();
     }
 
-    private Boolean sendBlockingParcel(Long identifier) {
-        return super.service.findEntity(identifier).getHistoryPoints().stream()
-                .anyMatch(historyPoint -> historyPoint.getPointType() == DELIVERED);
-    }
+
 }

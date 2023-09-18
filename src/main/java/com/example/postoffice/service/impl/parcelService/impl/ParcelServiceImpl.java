@@ -3,6 +3,7 @@ package com.example.postoffice.service.impl.parcelService.impl;
 import com.example.postoffice.entity.HistoryPoint;
 import com.example.postoffice.entity.Parcel;
 import com.example.postoffice.entity.enums.PointType;
+import com.example.postoffice.exception.DeliveryException;
 import com.example.postoffice.repository.impl.ParcelRepository;
 import com.example.postoffice.service.BaseService;
 
@@ -18,6 +19,8 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.postoffice.entity.enums.PointType.DELIVERED;
 
 
 @Service
@@ -45,6 +48,7 @@ public class ParcelServiceImpl
     public Parcel arriveAtDepartment(Long identifierParcel, Integer departmentIndex) {
         departmentService.findByIndex(departmentIndex);
         Optional<Parcel> parcelRep = super.repository.findById(identifierParcel);
+        sendBlockingParcel(identifierParcel);
 
         if (parcelRep.isPresent()) {
             addEventParcel(parcelRep.get(), departmentIndex, PointType.ARRIVED);
@@ -56,7 +60,7 @@ public class ParcelServiceImpl
 
     public Parcel leaveDepartment(Long identifierParcel) {
         Optional<Parcel> parcelRep = super.repository.findById(identifierParcel);
-
+        sendBlockingParcel(identifierParcel);
         if (parcelRep.isPresent()) {
             Integer index = checkEndIndex(parcelRep.get());
             addEventParcel(parcelRep.get(), index, PointType.DEPARTURE);
@@ -108,6 +112,14 @@ public class ParcelServiceImpl
         List<HistoryPoint> historyPoints = parcel.getHistoryPoints();
 
         return historyPoints.get(historyPoints.size() - 1).getIndexDepartment();
+    }
+
+    private void sendBlockingParcel(Long identifier) {
+        boolean result = super.findEntity(identifier).getHistoryPoints().stream()
+                .anyMatch(historyPoint -> historyPoint.getPointType() == DELIVERED);
+        if (result) {
+            throw new DeliveryException("letter has been delivered");
+        }
     }
 
 }

@@ -149,7 +149,7 @@ class ParcelServiceImplTest {
         Assertions.assertThat(parcel).isEqualTo(parcelResponse);
 
         verify(departmentService).findByIndex(departmentIndex);
-        verify(parcelRepository).findById(identifierParcel);
+        verify(parcelRepository,times(2)).findById(identifierParcel);
         verify(parcelRepository).save(parcel);
 
     }
@@ -169,7 +169,7 @@ class ParcelServiceImplTest {
         Assertions.assertThat(parcelResponse).isNotNull();
         Assertions.assertThat(parcel).isEqualTo(parcelResponse);
 
-        verify(parcelRepository).findById(identifierParcel);
+        verify(parcelRepository,times(2)).findById(identifierParcel);
         verify(parcelRepository).save(parcel);
     }
 
