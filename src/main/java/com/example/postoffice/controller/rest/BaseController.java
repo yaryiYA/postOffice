@@ -53,9 +53,7 @@ public abstract class BaseController<E extends AbstractEntity,
     }
 
     @Override
-    public String deleteEntity(Long id) {
-        service.delete(id);
-        String value = "Entity was deleted";
-        return value;
+    public boolean deleteEntity(Long id) {
+        return service.delete(id);
     }
 }

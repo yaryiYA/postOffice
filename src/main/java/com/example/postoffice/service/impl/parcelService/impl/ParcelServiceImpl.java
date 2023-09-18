@@ -32,7 +32,7 @@ public class ParcelServiceImpl
 
     @Autowired
     public ParcelServiceImpl(ParcelRepository repository,
-                             DepartmentServiceImpl departmentService) {
+                             DepartmentService departmentService) {
         super(repository);
         this.departmentService = departmentService;
     }
@@ -50,6 +50,7 @@ public class ParcelServiceImpl
             addEventParcel(parcelRep.get(), departmentIndex, PointType.ARRIVED);
             return parcelRep.get();
         }
+
         throw new EntityNotFoundException("parcel not found");
     }
 
@@ -61,6 +62,7 @@ public class ParcelServiceImpl
             addEventParcel(parcelRep.get(), index, PointType.DEPARTURE);
             return parcelRep.get();
         }
+
         throw new EntityNotFoundException("parcel not found");
     }
 
@@ -72,6 +74,7 @@ public class ParcelServiceImpl
             addEventParcel(parcelRep.get(), index, PointType.DELIVERED);
             return parcelRep.get();
         }
+
         throw new EntityNotFoundException("parcel not found");
     }
 
@@ -81,6 +84,7 @@ public class ParcelServiceImpl
         if (parcelRep.isPresent()) {
             return parcelRep.get().getHistoryPoints();
         }
+
         throw new EntityNotFoundException("parcel not found");
     }
 
@@ -96,7 +100,8 @@ public class ParcelServiceImpl
         List<HistoryPoint> historyPoints = parcel.getHistoryPoints();
         historyPoints.add(historyPoint);
         parcel.setHistoryPoints(historyPoints);
-            return repository.save(parcel);
+
+        return repository.save(parcel);
     }
 
     private Integer checkEndIndex(Parcel parcel) {

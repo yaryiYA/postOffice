@@ -1,4 +1,4 @@
-package com.example.postoffice.dto.historyPoint;
+package com.example.postoffice.dto.historypoint;
 
 import com.example.postoffice.dto.AbstractRequestDto;
 import com.example.postoffice.entity.enums.PointType;
@@ -7,7 +7,6 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * DTO for {@link com.example.postoffice.entity.HistoryPoint}

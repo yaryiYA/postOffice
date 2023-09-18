@@ -60,7 +60,6 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({IllegalStateException.class})
-    @Order(Ordered.HIGHEST_PRECEDENCE)
     public ResponseEntity<ApiError<?>> handleIllegalStateException(IllegalStateException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiError<>(HttpStatus.BAD_REQUEST, exception.getMessage()));

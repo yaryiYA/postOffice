@@ -15,6 +15,6 @@ public interface CommonService<E extends AbstractEntity> {
 
     E update(E entity, Long id);
 
-    void delete(Long id);
+    boolean delete(Long id);
 
 }

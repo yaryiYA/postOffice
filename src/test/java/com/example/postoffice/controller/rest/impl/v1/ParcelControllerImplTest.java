@@ -1,7 +1,7 @@
 package com.example.postoffice.controller.rest.impl.v1;
 
-import com.example.postoffice.controller.rest.impl.v1.parcelController.impl.ParcelControllerImpl;
-import com.example.postoffice.dto.historyPoint.ResponseHistoryPointDto;
+import com.example.postoffice.controller.rest.impl.v1.parcelController.ParcelControllerImpl;
+import com.example.postoffice.dto.historypoint.ResponseHistoryPointDto;
 import com.example.postoffice.dto.parsel.RequestParcelDto;
 import com.example.postoffice.dto.parsel.ResponseParcelDto;
 import com.example.postoffice.entity.HistoryPoint;
@@ -48,7 +48,6 @@ class ParcelControllerImplTest {
     private ParcelServiceImpl parcelService;
     @MockBean
     private HistoryPointMapperImpl historyPointMapper;
-
     @MockBean
     private ParcelMapperImpl mapper;
 

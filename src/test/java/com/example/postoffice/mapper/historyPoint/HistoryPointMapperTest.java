@@ -1,7 +1,7 @@
 package com.example.postoffice.mapper.historyPoint;
 
-import com.example.postoffice.dto.historyPoint.RequestHistoryPointDto;
-import com.example.postoffice.dto.historyPoint.ResponseHistoryPointDto;
+import com.example.postoffice.dto.historypoint.RequestHistoryPointDto;
+import com.example.postoffice.dto.historypoint.ResponseHistoryPointDto;
 import com.example.postoffice.entity.HistoryPoint;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

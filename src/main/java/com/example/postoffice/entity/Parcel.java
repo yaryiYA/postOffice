@@ -32,7 +32,8 @@ public class Parcel extends AbstractEntity {
 
     @Column(name = "last_name", nullable = false)
     private String lastName;
+
     @Builder.Default
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private List<HistoryPoint> historyPoints = new ArrayList<>();
 }

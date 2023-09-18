@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 
 
-@Service
 public abstract class BaseService<E extends AbstractEntity,
         R extends CommonRepository<E>>
         implements CommonService<E> {
@@ -22,11 +21,9 @@ public abstract class BaseService<E extends AbstractEntity,
     protected final R repository;
 
 
-    @Autowired
     public BaseService(R repository) {
         this.repository = repository;
     }
-
 
     @Override
     public Page<E> findAll(Pageable pageable) {
@@ -53,10 +50,12 @@ public abstract class BaseService<E extends AbstractEntity,
     }
 
     @Override
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         E entity = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
-        repository.delete(entity);
+        if (entity != null) {
+            repository.delete(entity);
+            return true;
+        }
+        return false;
     }
-
-
 }

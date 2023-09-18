@@ -1,7 +1,7 @@
 package com.example.postoffice.dto.parsel;
 
 import com.example.postoffice.dto.AbstractResponseDto;
-import com.example.postoffice.dto.historyPoint.ResponseHistoryPointDto;
+import com.example.postoffice.dto.historypoint.ResponseHistoryPointDto;
 import com.example.postoffice.entity.enums.ParcelType;
 
 import lombok.*;

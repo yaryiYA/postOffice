@@ -1,7 +1,7 @@
-package com.example.postoffice.controller.rest.impl.v1.departmentController.impl;
+package com.example.postoffice.controller.rest.impl.v1.departmentController;
 
 import com.example.postoffice.controller.rest.BaseController;
-import com.example.postoffice.controller.rest.impl.v1.departmentController.DepartmentController;
+import com.example.postoffice.controller.rest.CommonController;
 import com.example.postoffice.dto.department.RequestDepartmentDto;
 import com.example.postoffice.dto.department.ResponseDepartmentDto;
 import com.example.postoffice.entity.Department;
@@ -17,7 +17,9 @@ public class DepartmentControllerImpl extends BaseController<Department,
         ResponseDepartmentDto,
         DepartmentServiceImpl,
         DepartmentMapperImpl>
-        implements DepartmentController {
+        implements CommonController<Department,
+                RequestDepartmentDto,
+                ResponseDepartmentDto> {
 
 
     protected DepartmentControllerImpl(DepartmentServiceImpl service, DepartmentMapperImpl mapper) {

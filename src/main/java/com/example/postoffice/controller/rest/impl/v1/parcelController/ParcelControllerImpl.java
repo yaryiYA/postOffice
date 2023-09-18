@@ -1,8 +1,7 @@
-package com.example.postoffice.controller.rest.impl.v1.parcelController.impl;
+package com.example.postoffice.controller.rest.impl.v1.parcelController;
 
 import com.example.postoffice.controller.rest.BaseController;
-import com.example.postoffice.controller.rest.impl.v1.parcelController.ParcelController;
-import com.example.postoffice.dto.historyPoint.ResponseHistoryPointDto;
+import com.example.postoffice.dto.historypoint.ResponseHistoryPointDto;
 import com.example.postoffice.dto.parsel.RequestParcelDto;
 import com.example.postoffice.dto.parsel.ResponseParcelDto;
 import com.example.postoffice.entity.Parcel;
@@ -29,8 +28,7 @@ public class ParcelControllerImpl extends BaseController<Parcel,
         RequestParcelDto,
         ResponseParcelDto,
         ParcelService,
-        ParcelMapperImpl>
-        implements ParcelController {
+        ParcelMapperImpl> {
 
     private final HistoryPointMapperImpl historyPointMapper;
 

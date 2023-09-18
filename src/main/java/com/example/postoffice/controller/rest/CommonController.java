@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 public interface CommonController<E extends AbstractEntity,
         Q extends AbstractRequestDto,
-        S extends AbstractResponseDto
-        > {
+        S extends AbstractResponseDto> {
 
     @GetMapping("/all")
     Page<S> getAll(@RequestParam(value = "offset", defaultValue = "0") Integer offset,
@@ -27,5 +26,5 @@ public interface CommonController<E extends AbstractEntity,
     S updateEntity(@RequestBody Q requestEntity, @RequestParam("id") Long id);
 
     @DeleteMapping("/delete")
-    String deleteEntity(@RequestParam("id") Long id);
+    boolean deleteEntity(@RequestParam("id") Long id);
 }

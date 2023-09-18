@@ -1,4 +1,4 @@
-package com.example.postoffice.dto.historyPoint;
+package com.example.postoffice.dto.historypoint;
 
 import com.example.postoffice.dto.AbstractResponseDto;
 import com.example.postoffice.entity.enums.PointType;
